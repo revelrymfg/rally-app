@@ -20,7 +20,7 @@ export default function EventHeader() {
           }}
         >
           <img
-            src="/sgc-logo.png"
+            src={`${import.meta.env.BASE_URL}sgc-logo.png`}
             alt="Starch Golf Club"
             style={{
               width: '100%',
