@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rally-dev",
+      "runtimeExecutable": "/Users/brandonball/.nvm/versions/node/v25.9.0/bin/node",
+      "runtimeArgs": ["node_modules/.bin/vite"],
+      "port": 5173,
+      "autoPort": true
+    },
+    {
+      "name": "rally-preview",
+      "runtimeExecutable": "/Users/brandonball/.nvm/versions/node/v25.9.0/bin/node",
+      "runtimeArgs": ["node_modules/.bin/vite", "preview"],
+      "port": 4173,
+      "autoPort": true
+    }
+  ]
+}

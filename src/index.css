@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0E0E10;
+  --color-bg-secondary: #161618;
+  --color-bg-tertiary: #1C1C1F;
+
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #6B7280;
+
+  --color-team-red: #C8102E;
+  --color-team-blue: #003DA5;
+
+  --color-accent-warm: #C2B8A3;
+  --color-accent-brown: #5A4633;
+
+  --color-surface: #19191C;
+  --color-surface-border: #2A2A2E;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 70%);
+    color: var(--color-text-primary);
+    min-height: 100dvh;
+    margin: 0;
+  }
+  #root {
+    min-height: 100dvh;
+  }
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.animate-pulse-live {
+  animation: pulse-live 2s ease-in-out infinite;
+}
