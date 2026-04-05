@@ -6,6 +6,7 @@ import LeaderboardList from '../LeaderboardList'
 import FeedCard from '../FeedCard'
 import AwardWinners from '../AwardWinners'
 import SideGames from '../SideGames'
+import MomentumBar from '../MomentumBar'
 import { useFeed } from '../../hooks/useFirestore'
 import { eventData, scores, matches, leaderboard, rounds, playerShortNames } from '../../data/mockData'
 
@@ -61,6 +62,8 @@ export default function HomeView({ currentUser }) {
           )}
         </div>
       )}
+
+      <MomentumBar />
 
       <SectionHeader title="Live" live />
       {matches.map((match) => (

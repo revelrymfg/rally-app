@@ -1,3 +1,5 @@
+import { Flag } from 'lucide-react'
+
 export default function MatchCard({ match }) {
   const borderColor =
     match.leadingTeam === 'ca'
@@ -13,9 +15,11 @@ export default function MatchCard({ match }) {
         ? 'text-team-blue'
         : 'text-text-muted'
 
+  const isComplete = match.thru === 'F'
+
   return (
     <div
-      className="mx-5 mb-2 rounded-xl overflow-hidden flex"
+      className={`mx-5 mb-2 rounded-xl overflow-hidden flex ${match.leadingTeam ? 'animate-flash' : ''}`}
       style={{
         background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 3px rgba(0,0,0,0.3)',
@@ -35,13 +39,18 @@ export default function MatchCard({ match }) {
         </div>
 
         {/* Status */}
-        <div className="text-right ml-4 shrink-0">
-          <p className={`text-[18px] font-semibold leading-none ${statusColor}`}>
-            {match.status}
-          </p>
-          <p className="text-[11px] text-text-muted mt-1 tracking-wide uppercase">
-            thru {match.thru}
-          </p>
+        <div className="text-right ml-4 shrink-0 flex items-center gap-2">
+          {isComplete && (
+            <Flag size={14} className="text-accent-warm animate-flag" />
+          )}
+          <div>
+            <p className={`text-[18px] font-semibold leading-none ${statusColor}`}>
+              {match.status}
+            </p>
+            <p className="text-[11px] text-text-muted mt-1 tracking-wide uppercase">
+              {isComplete ? 'Final' : `thru ${match.thru}`}
+            </p>
+          </div>
         </div>
       </div>
     </div>

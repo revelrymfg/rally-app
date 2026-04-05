@@ -7,7 +7,7 @@ export default function ScoreHero({ scores, day, session }) {
           <p className="text-[18px] font-bold tracking-[0.18em] uppercase text-team-red mb-1">
             CA
           </p>
-          <p className="text-[42px] font-bold leading-none tracking-tight text-text-primary">
+          <p className="text-[42px] font-bold leading-none tracking-tight text-text-primary animate-pulse-score">
             {scores.ca}
             <span className="inline-block w-1 h-1 rounded-full bg-team-red ml-2 mb-2 align-middle" />
           </p>
@@ -25,7 +25,7 @@ export default function ScoreHero({ scores, day, session }) {
           <p className="text-[18px] font-bold tracking-[0.18em] uppercase text-team-blue mb-1">
             PDX
           </p>
-          <p className="text-[42px] font-bold leading-none tracking-tight text-text-primary">
+          <p className="text-[42px] font-bold leading-none tracking-tight text-text-primary animate-pulse-score">
             <span className="inline-block w-1 h-1 rounded-full bg-team-blue mr-2 mb-2 align-middle" />
             {scores.pdx}
           </p>

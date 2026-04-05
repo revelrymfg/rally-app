@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Trophy } from 'lucide-react'
+import { Trophy, Sparkles } from 'lucide-react'
 import SectionHeader from '../SectionHeader'
 import MatchCard from '../MatchCard'
 import AwardsVoting from '../AwardsVoting'
+import RoundRecap from '../RoundRecap'
 import { rounds } from '../../data/mockData'
 import { useVotes } from '../../hooks/useFirestore'
 
@@ -31,6 +32,7 @@ function VoteButton({ round, currentUser, onOpen }) {
 
 export default function MatchesView({ currentUser }) {
   const [votingRound, setVotingRound] = useState(null)
+  const [recapRound, setRecapRound] = useState(null)
 
   return (
     <div className="pt-6">
@@ -46,7 +48,36 @@ export default function MatchesView({ currentUser }) {
           ))}
 
           {round.status === 'complete' && (
-            <VoteButton round={round} currentUser={currentUser} onOpen={() => setVotingRound(round)} />
+            <div className="flex gap-2 mx-5 mt-2">
+              <button
+                onClick={() => setVotingRound(round)}
+                className="flex-1 rounded-xl px-4 py-3 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                style={{
+                  background: 'linear-gradient(135deg, #2a2520 0%, #1f1b17 100%)',
+                  border: '1px solid #C2B8A344',
+                  boxShadow: 'inset 0 1px 0 rgba(194,184,163,0.08)',
+                }}
+              >
+                <Trophy size={14} className="text-accent-warm" />
+                <span className="text-[12px] font-semibold tracking-wider uppercase text-accent-warm">
+                  Awards
+                </span>
+              </button>
+              <button
+                onClick={() => setRecapRound(round)}
+                className="flex-1 rounded-xl px-4 py-3 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                style={{
+                  background: 'linear-gradient(135deg, #1a2025 0%, #151a1f 100%)',
+                  border: '1px solid #2A2A2E',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+                }}
+              >
+                <Sparkles size={14} className="text-team-blue" />
+                <span className="text-[12px] font-semibold tracking-wider uppercase text-text-secondary">
+                  Recap
+                </span>
+              </button>
+            </div>
           )}
         </div>
       ))}
@@ -59,6 +90,13 @@ export default function MatchesView({ currentUser }) {
           roundName={votingRound.name}
           currentUser={currentUser}
           onClose={() => setVotingRound(null)}
+        />
+      )}
+
+      {recapRound && (
+        <RoundRecap
+          round={recapRound}
+          onClose={() => setRecapRound(null)}
         />
       )}
     </div>

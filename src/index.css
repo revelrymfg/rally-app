@@ -38,10 +38,67 @@
   }
 }
 
+/* ── Animations ─────────────────────────────────── */
+
 @keyframes pulse-live {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
 .animate-pulse-live {
   animation: pulse-live 2s ease-in-out infinite;
+}
+
+@keyframes flash-win {
+  0% { background-color: transparent; }
+  15% { background-color: rgba(194, 184, 163, 0.08); }
+  100% { background-color: transparent; }
+}
+.animate-flash {
+  animation: flash-win 1.5s ease-out;
+}
+
+@keyframes pulse-score {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.06); }
+  60% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+.animate-pulse-score {
+  animation: pulse-score 0.8s ease-out;
+}
+
+@keyframes flag-wave {
+  0% { transform: translateX(6px) rotate(-5deg); opacity: 0; }
+  40% { transform: translateX(0) rotate(3deg); opacity: 1; }
+  60% { transform: rotate(-2deg); }
+  80% { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); opacity: 1; }
+}
+.animate-flag {
+  animation: flag-wave 0.6s ease-out forwards;
+}
+
+@keyframes bar-fill {
+  from { width: 0%; }
+}
+.animate-bar-fill {
+  animation: bar-fill 0.8s ease-out forwards;
+}
+
+@keyframes typewriter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-typewriter > span {
+  display: inline;
+  opacity: 0;
+  animation: typewriter 0.03s ease forwards;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in-up 0.4s ease-out forwards;
 }
