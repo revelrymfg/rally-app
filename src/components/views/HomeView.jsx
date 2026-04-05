@@ -5,6 +5,7 @@ import MatchCard from '../MatchCard'
 import LeaderboardList from '../LeaderboardList'
 import FeedCard from '../FeedCard'
 import AwardWinners from '../AwardWinners'
+import SideGames from '../SideGames'
 import { eventData, scores, matches, leaderboard, feed, rounds, playerShortNames } from '../../data/mockData'
 
 export default function HomeView({ currentUser }) {
@@ -66,6 +67,9 @@ export default function HomeView({ currentUser }) {
 
       <SectionHeader title="Leaderboard" />
       <LeaderboardList players={leaderboard} />
+
+      <SectionHeader title="Side Games" />
+      <SideGames />
 
       <SectionHeader title="Awards" />
       <AwardWinners />
