@@ -1,3 +1,5 @@
+export const awardCategories = ['MVP', 'Sandbagger of the Round', 'Hungover Hero']
+
 export const eventData = {
   title: 'RALLY IN THE VALLEY',
   day: 1,

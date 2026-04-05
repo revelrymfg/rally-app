@@ -36,7 +36,7 @@ export default function App() {
   return (
     <AppShell activeTab={activeTab} onTabChange={handleTabChange} currentUser={currentUser} onReset={handleReset}>
       {activeTab === 'home' && <HomeView currentUser={currentUser} />}
-      {activeTab === 'matches' && <MatchesView />}
+      {activeTab === 'matches' && <MatchesView currentUser={currentUser} />}
       {activeTab === 'players' && <PlayersView />}
       {activeTab === 'feed' && <FeedView currentUser={currentUser} />}
     </AppShell>

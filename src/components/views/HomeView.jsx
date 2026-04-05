@@ -4,6 +4,7 @@ import SectionHeader from '../SectionHeader'
 import MatchCard from '../MatchCard'
 import LeaderboardList from '../LeaderboardList'
 import FeedCard from '../FeedCard'
+import AwardWinners from '../AwardWinners'
 import { eventData, scores, matches, leaderboard, feed, rounds, playerShortNames } from '../../data/mockData'
 
 export default function HomeView({ currentUser }) {
@@ -65,6 +66,9 @@ export default function HomeView({ currentUser }) {
 
       <SectionHeader title="Leaderboard" />
       <LeaderboardList players={leaderboard} />
+
+      <SectionHeader title="Awards" />
+      <AwardWinners />
 
       <SectionHeader title="Feed" />
       {feed.slice(0, 3).map((post) => (
