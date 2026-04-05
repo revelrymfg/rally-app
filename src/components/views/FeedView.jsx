@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { Send } from 'lucide-react'
 import FeedCard from '../FeedCard'
-import { feed as initialFeed } from '../../data/mockData'
+import { feed as initialFeed, playerShortNames } from '../../data/mockData'
 
-export default function FeedView() {
+export default function FeedView({ currentUser }) {
   const [posts, setPosts] = useState(initialFeed)
   const [message, setMessage] = useState('')
+
+  const authorName = currentUser
+    ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0]
+    : 'You'
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -14,9 +18,9 @@ export default function FeedView() {
 
     const newPost = {
       id: Date.now(),
-      author: 'You',
+      author: authorName,
       message: text,
-      team: 'ca',
+      team: currentUser?.team || 'ca',
       time: 'just now',
     }
     setPosts([newPost, ...posts])
