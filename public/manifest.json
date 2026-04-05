@@ -1,0 +1,15 @@
+{
+  "name": "Rally in the Valley",
+  "short_name": "Rally",
+  "theme_color": "#0a0a0f",
+  "background_color": "#0a0a0f",
+  "display": "standalone",
+  "start_url": "/rally-app/",
+  "icons": [
+    {
+      "src": "/rally-app/sgc-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
