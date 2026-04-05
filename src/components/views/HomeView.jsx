@@ -6,9 +6,11 @@ import LeaderboardList from '../LeaderboardList'
 import FeedCard from '../FeedCard'
 import AwardWinners from '../AwardWinners'
 import SideGames from '../SideGames'
-import { eventData, scores, matches, leaderboard, feed, rounds, playerShortNames } from '../../data/mockData'
+import { useFeed } from '../../hooks/useFirestore'
+import { eventData, scores, matches, leaderboard, rounds, playerShortNames } from '../../data/mockData'
 
 export default function HomeView({ currentUser }) {
+  const { posts: feedPosts } = useFeed()
   const shortName = currentUser ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0] : null
   const teamLabel = currentUser?.team === 'ca' ? 'CA' : 'PDX'
   const teamColor = currentUser?.team === 'ca' ? '#C8102E' : '#003DA5'
@@ -75,7 +77,7 @@ export default function HomeView({ currentUser }) {
       <AwardWinners />
 
       <SectionHeader title="Feed" />
-      {feed.slice(0, 3).map((post) => (
+      {feedPosts.slice(0, 3).map((post) => (
         <FeedCard key={post.id} post={post} />
       ))}
 

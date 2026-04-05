@@ -1,54 +1,18 @@
-import { useState, useCallback } from 'react'
 import { Trophy, X } from 'lucide-react'
 import { players, awardCategories } from '../data/mockData'
-
-function loadVotes(roundId) {
-  try {
-    return JSON.parse(localStorage.getItem(`rallyVotes_${roundId}`)) || {}
-  } catch { return {} }
-}
-
-function loadTallies(roundId) {
-  try {
-    return JSON.parse(localStorage.getItem(`rallyTallies_${roundId}`)) || {}
-  } catch { return {} }
-}
-
-function isClosed(roundId) {
-  return localStorage.getItem(`rallyAwardsClosed_${roundId}`) === 'true'
-}
+import { useVotes, useAwardsClosed } from '../hooks/useFirestore'
 
 export default function AwardsVoting({ roundId, roundName, currentUser, onClose }) {
-  const [myVotes, setMyVotes] = useState(() => loadVotes(roundId))
-  const [tallies, setTallies] = useState(() => loadTallies(roundId))
-  const [closed, setClosed] = useState(() => isClosed(roundId))
+  const { tallies, getMyVotes, castVote } = useVotes(roundId)
+  const { closed, closeVoting } = useAwardsClosed(roundId)
 
-  const handleVote = useCallback((category, playerName) => {
-    if (closed) return
-
-    const prevVote = myVotes[category]
-    const newVotes = { ...myVotes, [category]: playerName }
-
-    // Update tallies
-    const catTallies = { ...(tallies[category] || {}) }
-    if (prevVote && catTallies[prevVote]) {
-      catTallies[prevVote] = Math.max(0, catTallies[prevVote] - 1)
-    }
-    catTallies[playerName] = (catTallies[playerName] || 0) + 1
-    const newTallies = { ...tallies, [category]: catTallies }
-
-    setMyVotes(newVotes)
-    setTallies(newTallies)
-    localStorage.setItem(`rallyVotes_${roundId}`, JSON.stringify(newVotes))
-    localStorage.setItem(`rallyTallies_${roundId}`, JSON.stringify(newTallies))
-  }, [myVotes, tallies, roundId, closed])
-
-  function handleClose() {
-    localStorage.setItem(`rallyAwardsClosed_${roundId}`, 'true')
-    setClosed(true)
-  }
-
+  const myVotes = getMyVotes(currentUser?.name)
   const votablePlayers = players.filter(p => p.name !== currentUser?.name)
+
+  function handleVote(category, playerName) {
+    if (closed) return
+    castVote(category, currentUser?.name, playerName)
+  }
 
   return (
     <div
@@ -140,7 +104,7 @@ export default function AwardsVoting({ roundId, roundName, currentUser, onClose 
         {/* Admin close button */}
         {!closed && (
           <button
-            onClick={handleClose}
+            onClick={closeVoting}
             className="w-full rounded-xl py-3 mb-4 text-[13px] font-semibold uppercase tracking-wider text-text-muted border border-surface-border hover:border-accent-warm/40 hover:text-accent-warm transition-colors"
           >
             Close Voting for Round {roundId}

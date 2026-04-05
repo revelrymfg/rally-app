@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Send } from 'lucide-react'
 import FeedCard from '../FeedCard'
-import { feed as initialFeed, playerShortNames } from '../../data/mockData'
+import { useFeed } from '../../hooks/useFirestore'
+import { playerShortNames } from '../../data/mockData'
 
 export default function FeedView({ currentUser }) {
-  const [posts, setPosts] = useState(initialFeed)
+  const { posts, addPost } = useFeed()
   const [message, setMessage] = useState('')
 
   const authorName = currentUser
@@ -15,15 +16,7 @@ export default function FeedView({ currentUser }) {
     e.preventDefault()
     const text = message.trim()
     if (!text) return
-
-    const newPost = {
-      id: Date.now(),
-      author: authorName,
-      message: text,
-      team: currentUser?.team || 'ca',
-      time: 'just now',
-    }
-    setPosts([newPost, ...posts])
+    addPost(authorName, text, currentUser?.team || 'ca')
     setMessage('')
   }
 

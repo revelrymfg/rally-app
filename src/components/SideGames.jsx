@@ -1,35 +1,25 @@
 import { useState, useCallback } from 'react'
 import { Target, Ruler, ChevronDown, ChevronUp, Check } from 'lucide-react'
 import { players, rounds } from '../data/mockData'
+import { useSideGames } from '../hooks/useFirestore'
 
-const STORAGE_KEY = 'rallySideGames'
 const categories = [
   { id: 'longest-drive', label: 'Longest Drive', icon: Ruler },
   { id: 'closest-pin', label: 'Closest to the Pin', icon: Target },
 ]
 
-function loadSideGames() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}
-  } catch { return {} }
-}
-
-function saveSideGames(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-}
-
 export default function SideGames() {
-  const [data, setData] = useState(loadSideGames)
+  const { games, saveGame } = useSideGames()
   const [adminOpen, setAdminOpen] = useState(false)
 
-  // Flatten all entries for the leaderboard
+  // Flatten all entries for display
   const entries = []
   for (const cat of categories) {
     for (const round of rounds) {
       const key = `${cat.id}_${round.id}`
-      if (data[key]) {
+      if (games[key]) {
         entries.push({
-          ...data[key],
+          ...games[key],
           category: cat.label,
           categoryId: cat.id,
           roundId: round.id,
@@ -47,13 +37,11 @@ export default function SideGames() {
 
   return (
     <div className="mx-5 mb-4">
-      {/* Results list */}
       {entries.length > 0 ? (
         <div className="space-y-1.5 mb-3">
           {entries.map((entry) => {
             const player = players.find(p => p.name === entry.winner)
             const teamColor = player?.team === 'ca' ? '#C8102E' : '#003DA5'
-
             return (
               <div
                 key={`${entry.categoryId}-${entry.roundId}`}
@@ -80,40 +68,31 @@ export default function SideGames() {
           })}
         </div>
       ) : (
-        <p className="text-[13px] text-text-muted text-center py-3">
-          No side game results yet
-        </p>
+        <p className="text-[13px] text-text-muted text-center py-3">No side game results yet</p>
       )}
 
-      {/* Leaderboard summary */}
       {Object.keys(winCounts).length > 1 && (
         <div
           className="rounded-xl px-3.5 py-2.5 mb-3"
-          style={{
-            background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
-            border: '1px solid #2A2A2E',
-          }}
+          style={{ background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)', border: '1px solid #2A2A2E' }}
         >
           <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-text-muted mb-1.5">
             Side Game Leaders
           </p>
-          {Object.entries(winCounts)
-            .sort((a, b) => b[1] - a[1])
-            .map(([name, count]) => {
-              const player = players.find(p => p.name === name)
-              const teamColor = player?.team === 'ca' ? '#C8102E' : '#003DA5'
-              return (
-                <div key={name} className="flex items-center gap-2 py-1">
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: teamColor }} />
-                  <span className="flex-1 text-[13px] text-text-primary">{name.split(' ')[0]}</span>
-                  <span className="text-[12px] font-semibold tabular-nums text-accent-warm">{count}</span>
-                </div>
-              )
-            })}
+          {Object.entries(winCounts).sort((a, b) => b[1] - a[1]).map(([name, count]) => {
+            const player = players.find(p => p.name === name)
+            const teamColor = player?.team === 'ca' ? '#C8102E' : '#003DA5'
+            return (
+              <div key={name} className="flex items-center gap-2 py-1">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: teamColor }} />
+                <span className="flex-1 text-[13px] text-text-primary">{name.split(' ')[0]}</span>
+                <span className="text-[12px] font-semibold tabular-nums text-accent-warm">{count}</span>
+              </div>
+            )
+          })}
         </div>
       )}
 
-      {/* Admin toggle */}
       <button
         onClick={() => setAdminOpen(!adminOpen)}
         className="w-full rounded-xl py-2.5 flex items-center justify-center gap-2 text-[12px] font-medium uppercase tracking-wider text-text-muted border border-surface-border hover:border-accent-warm/30 hover:text-text-secondary transition-colors"
@@ -122,15 +101,12 @@ export default function SideGames() {
         {adminOpen ? 'Close Admin' : 'Enter Results'}
       </button>
 
-      {/* Admin input panel */}
-      {adminOpen && (
-        <AdminPanel data={data} setData={setData} />
-      )}
+      {adminOpen && <AdminPanel games={games} saveGame={saveGame} />}
     </div>
   )
 }
 
-function AdminPanel({ data, setData }) {
+function AdminPanel({ games, saveGame }) {
   return (
     <div className="mt-3 space-y-3">
       {categories.map((cat) => (
@@ -139,28 +115,24 @@ function AdminPanel({ data, setData }) {
             <cat.icon size={13} />
             {cat.label}
           </p>
-          {rounds.map((round) => (
-            <AdminRow
-              key={`${cat.id}-${round.id}`}
-              categoryId={cat.id}
-              roundId={round.id}
-              roundName={`Round ${round.id}`}
-              existing={data[`${cat.id}_${round.id}`]}
-              onSave={(entry) => {
-                const key = `${cat.id}_${round.id}`
-                const next = { ...data, [key]: entry }
-                setData(next)
-                saveSideGames(next)
-              }}
-            />
-          ))}
+          {rounds.map((round) => {
+            const key = `${cat.id}_${round.id}`
+            return (
+              <AdminRow
+                key={key}
+                roundId={round.id}
+                existing={games[key]}
+                onSave={(entry) => saveGame(key, entry)}
+              />
+            )
+          })}
         </div>
       ))}
     </div>
   )
 }
 
-function AdminRow({ categoryId, roundId, roundName, existing, onSave }) {
+function AdminRow({ roundId, existing, onSave }) {
   const [editing, setEditing] = useState(!existing)
   const [winner, setWinner] = useState(existing?.winner || '')
   const [hole, setHole] = useState(existing?.hole || '')
@@ -174,15 +146,10 @@ function AdminRow({ categoryId, roundId, roundName, existing, onSave }) {
   if (!editing && existing) {
     return (
       <div className="flex items-center gap-2 mb-2 px-2">
-        <span className="text-[12px] text-text-muted w-14">{roundName}</span>
+        <span className="text-[12px] text-text-muted w-14">Round {roundId}</span>
         <span className="flex-1 text-[13px] text-text-primary">{existing.winner.split(' ')[0]}</span>
         <span className="text-[12px] text-text-muted">Hole {existing.hole}</span>
-        <button
-          onClick={() => setEditing(true)}
-          className="text-[11px] text-text-muted underline underline-offset-2"
-        >
-          Edit
-        </button>
+        <button onClick={() => setEditing(true)} className="text-[11px] text-text-muted underline underline-offset-2">Edit</button>
       </div>
     )
   }
@@ -190,10 +157,7 @@ function AdminRow({ categoryId, roundId, roundName, existing, onSave }) {
   return (
     <div
       className="rounded-xl px-3 py-2.5 mb-2 flex items-center gap-2"
-      style={{
-        background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
-        border: '1px solid #2A2A2E',
-      }}
+      style={{ background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)', border: '1px solid #2A2A2E' }}
     >
       <span className="text-[12px] text-text-muted w-10 shrink-0">Rd {roundId}</span>
       <select
@@ -203,9 +167,7 @@ function AdminRow({ categoryId, roundId, roundName, existing, onSave }) {
       >
         <option value="">Player</option>
         {players.map((p) => (
-          <option key={p.name} value={p.name}>
-            {p.name}
-          </option>
+          <option key={p.name} value={p.name}>{p.name}</option>
         ))}
       </select>
       <input
