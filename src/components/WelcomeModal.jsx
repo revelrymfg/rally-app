@@ -1,11 +1,11 @@
 import { players } from '../data/mockData'
 
-const caPlayers = players.filter((p) => p.team === 'ca')
-const pdxPlayers = players.filter((p) => p.team === 'pdx')
+// Show all players sorted alphabetically for identity selection
+const allPlayers = [...players].sort((a, b) => a.name.localeCompare(b.name))
 
 export default function WelcomeModal({ onSelect }) {
   function handleSelect(player) {
-    const user = { name: player.name, team: player.team }
+    const user = { name: player.name, team: player.team || 'tbd' }
     localStorage.setItem('rallyUser', JSON.stringify(user))
     onSelect(user)
   }
@@ -32,39 +32,33 @@ export default function WelcomeModal({ onSelect }) {
         </p>
 
         <div className="flex-1 overflow-y-auto -mx-1 px-1 pb-4">
-          <TeamGroup label="CA" color="#C8102E" players={caPlayers} onSelect={handleSelect} />
-          <TeamGroup label="PDX" color="#003DA5" players={pdxPlayers} onSelect={handleSelect} />
+          <div className="grid grid-cols-2 gap-2">
+            {allPlayers.map((player) => {
+              const badgeColor = player.captain
+                ? (player.team === 'ca' ? '#C8102E' : '#003DA5')
+                : null
+              return (
+                <button
+                  key={player.name}
+                  onClick={() => handleSelect(player)}
+                  className="rounded-xl px-3 py-3 text-left text-[14px] font-medium text-text-primary transition-all active:scale-[0.97]"
+                  style={{
+                    background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
+                    border: badgeColor ? `1.5px solid ${badgeColor}` : '1px solid #2A2A2E',
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+                  }}
+                >
+                  <span className="block truncate">
+                    {player.captain ? '👑 ' : ''}{player.name}
+                  </span>
+                  <span className="text-[11px] text-text-muted">
+                    {player.ghin ? `GHIN ${player.ghin}` : 'HCP TBD'}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
-      </div>
-    </div>
-  )
-}
-
-function TeamGroup({ label, color, players, onSelect }) {
-  return (
-    <div className="mb-5">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-        <span className="text-[13px] font-bold tracking-[0.12em] uppercase" style={{ color }}>
-          {label}
-        </span>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        {players.map((player) => (
-          <button
-            key={player.name}
-            onClick={() => onSelect(player)}
-            className="rounded-xl px-3 py-3 text-left text-[14px] font-medium text-text-primary transition-all active:scale-[0.97]"
-            style={{
-              background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
-              border: '1px solid #2A2A2E',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
-            }}
-          >
-            <span className="block truncate">{player.name}</span>
-            <span className="text-[11px] text-text-muted">HCP {player.handicap}</span>
-          </button>
-        ))}
       </div>
     </div>
   )

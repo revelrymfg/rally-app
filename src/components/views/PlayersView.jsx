@@ -6,6 +6,7 @@ export default function PlayersView() {
   const [tab, setTab] = useState('rankings')
   const caPlayers = players.filter((p) => p.team === 'ca')
   const pdxPlayers = players.filter((p) => p.team === 'pdx')
+  const undrafted = players.filter((p) => p.team === null)
 
   return (
     <div className="pt-6">
@@ -35,6 +36,9 @@ export default function PlayersView() {
         <>
           <TeamSection label="CA" color="#C8102E" players={caPlayers} />
           <TeamSection label="PDX" color="#003DA5" players={pdxPlayers} />
+          {undrafted.length > 0 && (
+            <TeamSection label="Draft Pool" color="#6B7280" players={undrafted} />
+          )}
         </>
       )}
 
@@ -67,7 +71,7 @@ function TeamSection({ label, color, players }) {
         {players.map((player, i) => (
           <div key={player.name} className={`flex items-center px-4 py-3 ${i !== players.length - 1 ? 'border-b border-surface-border' : ''}`}>
             <span className="flex-1 text-[14px] font-medium text-text-primary">{player.name}</span>
-            <span className="w-12 text-center text-[13px] text-text-secondary tabular-nums">{player.handicap}</span>
+            <span className="w-12 text-center text-[13px] text-text-secondary tabular-nums">{player.handicap ?? 'TBD'}</span>
             <span className="w-20 text-center text-[13px] font-medium tabular-nums text-text-secondary">{player.wins}-{player.losses}-{player.draws}</span>
           </div>
         ))}

@@ -89,36 +89,38 @@ export const rounds = [
   },
 ]
 
-// All 25 players
+// All 26 players — captains pre-assigned, rest go to draft pool
+// handicap: null = no GHIN on file, ghin: GHIN number or null
 export const players = [
-  // CA (13 players)
-  { name: 'Micah Pueschel', team: 'ca', handicap: 8, wins: 3, losses: 0, draws: 0 },
-  { name: 'James Menke', team: 'ca', handicap: 10, wins: 2, losses: 1, draws: 0 },
-  { name: 'Todd Howe', team: 'ca', handicap: 12, wins: 2, losses: 0, draws: 1 },
-  { name: 'John Paik', team: 'ca', handicap: 14, wins: 1, losses: 0, draws: 2 },
-  { name: 'Brian Humphrey', team: 'ca', handicap: 9, wins: 1, losses: 1, draws: 1 },
-  { name: 'Kelso Davis', team: 'ca', handicap: 11, wins: 2, losses: 0, draws: 1 },
-  { name: 'Matt Mendoza', team: 'ca', handicap: 15, wins: 0, losses: 1, draws: 1 },
-  { name: 'Nick DeRosa', team: 'ca', handicap: 13, wins: 1, losses: 0, draws: 1 },
-  { name: 'Rob Donegan', team: 'ca', handicap: 7, wins: 1, losses: 1, draws: 0 },
-  { name: 'Connor McLaughlin', team: 'ca', handicap: 16, wins: 1, losses: 0, draws: 1 },
-  { name: 'Ali', team: 'ca', handicap: 10, wins: 1, losses: 1, draws: 0 },
-  { name: 'Jason Jackson', team: 'ca', handicap: 18, wins: 0, losses: 1, draws: 1 },
-  { name: 'Robby Keilch', team: 'ca', handicap: 12, wins: 1, losses: 0, draws: 0 },
+  // Captains
+  { name: 'Nick DeRosa', team: 'ca', handicap: null, ghin: '11682633', captain: true, wins: 0, losses: 0, draws: 0 },
+  { name: 'Rob Donegan', team: 'pdx', handicap: null, ghin: null, captain: true, wins: 0, losses: 0, draws: 0 },
 
-  // PDX (12 players)
-  { name: 'Patrick Wolfe', team: 'pdx', handicap: 6, wins: 1, losses: 2, draws: 0 },
-  { name: 'Aaron Kramer', team: 'pdx', handicap: 11, wins: 1, losses: 1, draws: 1 },
-  { name: 'Micah Brown', team: 'pdx', handicap: 9, wins: 1, losses: 1, draws: 1 },
-  { name: 'Scott Owen', team: 'pdx', handicap: 13, wins: 1, losses: 1, draws: 1 },
-  { name: 'Reid Vale', team: 'pdx', handicap: 10, wins: 1, losses: 1, draws: 0 },
-  { name: 'Brandon Lehmann', team: 'pdx', handicap: 15, wins: 1, losses: 1, draws: 0 },
-  { name: 'Joseph Kim', team: 'pdx', handicap: 12, wins: 1, losses: 0, draws: 1 },
-  { name: 'Luis Lopez', team: 'pdx', handicap: 8, wins: 0, losses: 1, draws: 1 },
-  { name: 'Darren Kavapalu', team: 'pdx', handicap: 14, wins: 1, losses: 1, draws: 0 },
-  { name: 'Brandon Ball', team: 'pdx', handicap: 17, wins: 0, losses: 1, draws: 1 },
-  { name: 'Travis Mantych', team: 'pdx', handicap: 11, wins: 1, losses: 1, draws: 0 },
-  { name: 'Troy Knight', team: 'pdx', handicap: 16, wins: 1, losses: 0, draws: 1 },
+  // Draft pool (24 players — team TBD until draft)
+  { name: 'Micah Pueschel', team: null, handicap: null, ghin: '699697', wins: 0, losses: 0, draws: 0 },
+  { name: 'James Menke', team: null, handicap: null, ghin: '12055493', wins: 0, losses: 0, draws: 0 },
+  { name: 'Todd Howe', team: null, handicap: null, ghin: '10209715', wins: 0, losses: 0, draws: 0 },
+  { name: 'John Paik', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Brian Humphrey', team: null, handicap: null, ghin: '10741518', wins: 0, losses: 0, draws: 0 },
+  { name: 'Kelso Davis', team: null, handicap: null, ghin: '11214317', wins: 0, losses: 0, draws: 0 },
+  { name: 'Matt Mendoza', team: null, handicap: null, ghin: '12934054', wins: 0, losses: 0, draws: 0 },
+  { name: 'Connor McLaughlin', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Ali', team: null, handicap: null, ghin: '2564735', wins: 0, losses: 0, draws: 0 },
+  { name: 'Jason Jackson', team: null, handicap: null, ghin: '10679368', wins: 0, losses: 0, draws: 0 },
+  { name: 'Robby Keilch', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Patrick Wolfe', team: null, handicap: null, ghin: '8724492', wins: 0, losses: 0, draws: 0 },
+  { name: 'Aaron Kramer', team: null, handicap: null, ghin: '11275296', wins: 0, losses: 0, draws: 0 },
+  { name: 'Micah Brown', team: null, handicap: null, ghin: '2352524', wins: 0, losses: 0, draws: 0 },
+  { name: 'Scott Owen', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Reid Vale', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Brandon Lehmann', team: null, handicap: null, ghin: '3065904', wins: 0, losses: 0, draws: 0 },
+  { name: 'Joseph Kim', team: null, handicap: null, ghin: '10237090', wins: 0, losses: 0, draws: 0 },
+  { name: 'Luis Lopez', team: null, handicap: null, ghin: '9355033', wins: 0, losses: 0, draws: 0 },
+  { name: 'Darren Kavapalu', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Brandon Ball', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Travis Mantych', team: null, handicap: null, ghin: '12438621', wins: 0, losses: 0, draws: 0 },
+  { name: 'Troy Knight', team: null, handicap: null, ghin: '11326538', wins: 0, losses: 0, draws: 0 },
+  { name: 'Pasquale DeRosa', team: null, handicap: null, ghin: null, wins: 0, losses: 0, draws: 0 },
 ]
 
 // Map full names to short names used in match cards
@@ -148,6 +150,7 @@ export const playerShortNames = {
   'Brandon Ball': 'Brandon B.',
   'Travis Mantych': 'Travis',
   'Troy Knight': 'Troy',
+  'Pasquale DeRosa': 'Pasquale',
 }
 
 export const leaderboard = [
