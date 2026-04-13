@@ -24,6 +24,22 @@ export function isTournamentStarted() {
   return Date.now() >= TOURNAMENT_START
 }
 
+function CheckerStripe() {
+  return (
+    <div className="w-full h-2 flex mb-8 overflow-hidden rounded-sm opacity-50">
+      {Array.from({ length: 40 }).map((_, i) => (
+        <div
+          key={i}
+          className="h-full flex-1"
+          style={{
+            backgroundColor: i % 2 === 0 ? '#C8102E' : '#19191C',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export default function CountdownScreen({ onSkip }) {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft)
 
@@ -32,7 +48,7 @@ export default function CountdownScreen({ onSkip }) {
       const t = getTimeLeft()
       if (!t) {
         clearInterval(timer)
-        onSkip() // Tournament started — auto-skip
+        onSkip()
       }
       setTimeLeft(t)
     }, 1000)
@@ -106,39 +122,29 @@ export default function CountdownScreen({ onSkip }) {
           Until first tee
         </p>
 
-        {/* Checkerboard divider */}
-        <div className="flex justify-center gap-0 mb-8 opacity-40">
-          {Array.from({ length: 16 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-2.5 h-2.5"
-              style={{
-                backgroundColor: (Math.floor(i / 8) + i) % 2 === 0 ? '#C2B8A3' : 'transparent',
-              }}
-            />
-          ))}
-        </div>
+        {/* Checkerboard stripe */}
+        <CheckerStripe />
 
         {/* Schedule */}
         <div className="w-full space-y-3 mb-8">
           {SCHEDULE.map((s, i) => (
             <div
               key={i}
-              className="rounded-xl px-4 py-3 flex items-center gap-3"
+              className="rounded-xl px-4 py-3"
               style={{
                 background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
                 border: '1px solid #2A2A2E',
+                borderLeftWidth: 3,
+                borderLeftColor: '#C8102E',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
               }}
             >
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-text-primary">
-                  {s.round}: {s.format}
-                </p>
-                <p className="text-[11px] text-text-muted mt-0.5">
-                  {s.day} · {s.time}
-                </p>
-              </div>
+              <p className="text-[13px] font-semibold text-text-primary">
+                {s.round}: {s.format}
+              </p>
+              <p className="text-[11px] text-text-muted mt-0.5">
+                {s.day} · {s.time}
+              </p>
             </div>
           ))}
         </div>
@@ -148,18 +154,8 @@ export default function CountdownScreen({ onSkip }) {
           Soule Park Golf Course · Ojai, CA
         </p>
 
-        {/* Checkerboard divider */}
-        <div className="flex justify-center gap-0 mb-8 opacity-40">
-          {Array.from({ length: 16 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-2.5 h-2.5"
-              style={{
-                backgroundColor: (Math.floor(i / 8) + i) % 2 === 0 ? '#C2B8A3' : 'transparent',
-              }}
-            />
-          ))}
-        </div>
+        {/* Checkerboard stripe */}
+        <CheckerStripe />
 
         {/* Skip link */}
         <button
@@ -187,7 +183,10 @@ function TimeUnit({ value, label, color }) {
         className="w-16 h-16 rounded-xl flex items-center justify-center mb-1"
         style={{
           background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
-          border: `1px solid ${color}33`,
+          borderTop: `2px solid ${color}`,
+          borderLeft: `1px solid ${color}33`,
+          borderRight: `1px solid ${color}33`,
+          borderBottom: `1px solid ${color}33`,
           boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04), 0 0 20px ${color}10`,
         }}
       >
