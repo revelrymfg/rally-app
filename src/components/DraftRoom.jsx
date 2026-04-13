@@ -100,7 +100,7 @@ export default function DraftRoom({ isAdmin, onClose }) {
                 <span className="block text-[13px] font-medium text-text-primary truncate">
                   {player.name}
                 </span>
-                <span className="text-[10px] text-text-muted">{player.ghin ? `GHIN ${player.ghin}` : 'HCP TBD'}</span>
+                <span className="text-[10px] text-text-muted">{player.handicap != null ? `HCP ${player.handicap}` : 'HCP TBD'}</span>
               </button>
             ))}
           </div>

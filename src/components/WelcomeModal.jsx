@@ -52,7 +52,7 @@ export default function WelcomeModal({ onSelect }) {
                     {player.captain ? '👑 ' : ''}{player.name}
                   </span>
                   <span className="text-[11px] text-text-muted">
-                    {player.ghin ? `GHIN ${player.ghin}` : 'HCP TBD'}
+                    {player.handicap != null ? `HCP ${player.handicap}` : 'HCP TBD'}
                   </span>
                 </button>
               )
