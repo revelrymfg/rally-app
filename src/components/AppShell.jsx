@@ -1,4 +1,5 @@
 import BottomNav from './BottomNav'
+import PullToRefresh from './PullToRefresh'
 
 export default function AppShell({ children, activeTab, onTabChange, currentUser, onReset }) {
   return (
@@ -10,7 +11,7 @@ export default function AppShell({ children, activeTab, onTabChange, currentUser
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: currentUser.team === 'ca' ? '#C8102E' : '#003DA5' }}
+                style={{ backgroundColor: currentUser.team === 'ca' ? '#C8102E' : currentUser.team === 'pdx' ? '#003DA5' : '#6B7280' }}
               />
               <span className="text-[12px] text-text-secondary">
                 Playing as: <span className="font-semibold text-text-primary">{currentUser.name.split(' ')[0]}</span>
@@ -27,7 +28,9 @@ export default function AppShell({ children, activeTab, onTabChange, currentUser
       )}
 
       <main className="flex-1 w-full max-w-[430px] mx-auto pb-24">
-        {children}
+        <PullToRefresh>
+          {children}
+        </PullToRefresh>
       </main>
       <BottomNav activeTab={activeTab} onTabChange={onTabChange} />
     </div>
