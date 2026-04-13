@@ -14,20 +14,20 @@ export default function WelcomeModal({ onSelect }) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center"
       style={{ background: 'radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 70%)' }}
     >
-      <div className="w-full max-w-[430px] mx-auto h-dvh flex flex-col px-5 py-12">
-        <div className="text-center mb-8">
-          <h1 className="text-[20px] font-[800] tracking-[0.2em] uppercase text-accent-warm mb-2">
+      <div className="w-full max-w-[430px] mx-auto h-dvh flex flex-col px-5 pt-6 pb-4">
+        <div className="text-center mb-3">
+          <p className="text-[12px] font-semibold tracking-[0.2em] uppercase text-accent-warm/70 mb-1">
             Welcome to
-          </h1>
-          <h2 className="text-[24px] font-[800] tracking-[0.15em] uppercase text-text-primary mb-1">
+          </p>
+          <h1 className="text-[22px] font-[800] tracking-[0.12em] uppercase text-text-primary leading-tight">
             Rally in the Valley
-          </h2>
-          <p className="text-[14px] tracking-[0.15em] uppercase text-text-muted">
+          </h1>
+          <p className="text-[11px] tracking-[0.15em] uppercase text-text-muted mt-0.5">
             2026
           </p>
         </div>
 
-        <p className="text-[16px] font-semibold text-text-secondary text-center mb-5">
+        <p className="text-[14px] font-semibold text-text-secondary text-center mb-3">
           Who are you?
         </p>
 
