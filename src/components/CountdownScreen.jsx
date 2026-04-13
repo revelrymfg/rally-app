@@ -68,7 +68,7 @@ export default function CountdownScreen({ onSkip }) {
         }}
       />
 
-      <div className="relative w-full max-w-[430px] mx-auto px-5 pb-8 min-h-dvh flex flex-col items-center" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))' }}>
+      <div className="relative w-full max-w-[430px] mx-auto px-5 min-h-dvh flex flex-col items-center" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
         {/* SGC Logo */}
         <div className="relative mb-4">
           <div
@@ -153,6 +153,9 @@ export default function CountdownScreen({ onSkip }) {
         <p className="text-[12px] text-text-muted tracking-wider text-center mb-8">
           Soule Park Golf Course · Ojai, CA
         </p>
+
+        {/* Spacer pushes bottom content flush */}
+        <div className="flex-1" />
 
         {/* Checkerboard stripe */}
         <CheckerStripe />
