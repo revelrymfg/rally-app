@@ -7,6 +7,7 @@ import FeedCard from '../FeedCard'
 import AwardWinners from '../AwardWinners'
 import SideGames from '../SideGames'
 import MomentumBar from '../MomentumBar'
+import DraftButton from '../DraftButton'
 import { useFeed } from '../../hooks/useFirestore'
 import { eventData, scores, matches, leaderboard, rounds, playerShortNames } from '../../data/mockData'
 
@@ -62,6 +63,8 @@ export default function HomeView({ currentUser }) {
           )}
         </div>
       )}
+
+      <DraftButton />
 
       <MomentumBar />
 
