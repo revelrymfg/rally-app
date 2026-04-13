@@ -23,7 +23,7 @@ export default function WelcomeModal({ onSelect }) {
         WebkitOverflowScrolling: 'touch',
       }}
     >
-      <div className="w-full max-w-[430px] mx-auto px-5 pt-6 pb-8">
+      <div className="w-full max-w-[430px] mx-auto px-5 pb-8" style={{ paddingTop: 'calc(1.5rem + env(safe-area-inset-top, 0px))' }}>
         <div className="text-center mb-3">
           <p className="text-[12px] font-semibold tracking-[0.2em] uppercase text-accent-warm/70 mb-1">
             Welcome to

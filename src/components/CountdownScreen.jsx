@@ -68,7 +68,7 @@ export default function CountdownScreen({ onSkip }) {
         }}
       />
 
-      <div className="relative w-full max-w-[430px] mx-auto px-5 pt-12 pb-8 min-h-dvh flex flex-col items-center">
+      <div className="relative w-full max-w-[430px] mx-auto px-5 pb-8 min-h-dvh flex flex-col items-center" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))' }}>
         {/* SGC Logo */}
         <div className="relative mb-4">
           <div
