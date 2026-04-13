@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import AppShell from './components/AppShell'
 import WelcomeModal from './components/WelcomeModal'
+import CountdownScreen, { isTournamentStarted } from './components/CountdownScreen'
 import HomeView from './components/views/HomeView'
 import MatchesView from './components/views/MatchesView'
 import PlayersView from './components/views/PlayersView'
@@ -18,6 +19,9 @@ function loadUser() {
 export default function App() {
   const [activeTab, setActiveTab] = useState('home')
   const [currentUser, setCurrentUser] = useState(loadUser)
+  const [skippedCountdown, setSkippedCountdown] = useState(
+    () => sessionStorage.getItem('countdownSkipped') === 'true'
+  )
 
   function handleTabChange(tab) {
     setActiveTab(tab)
@@ -27,6 +31,16 @@ export default function App() {
   function handleReset() {
     localStorage.removeItem('rallyUser')
     setCurrentUser(null)
+  }
+
+  function handleSkipCountdown() {
+    sessionStorage.setItem('countdownSkipped', 'true')
+    setSkippedCountdown(true)
+  }
+
+  // Show countdown screen before tournament starts (unless skipped this session)
+  if (!isTournamentStarted() && !skippedCountdown) {
+    return <CountdownScreen onSkip={handleSkipCountdown} />
   }
 
   if (!currentUser) {
