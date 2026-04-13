@@ -71,7 +71,7 @@ function TeamSection({ label, color, players }) {
         {players.map((player, i) => (
           <div key={player.name} className={`flex items-center px-4 py-3 ${i !== players.length - 1 ? 'border-b border-surface-border' : ''}`}>
             <span className="flex-1 text-[14px] font-medium text-text-primary">{player.name}</span>
-            <span className="w-12 text-center text-[13px] text-text-secondary tabular-nums">{player.handicap ?? 'TBD'}</span>
+            <span className="w-12 text-center text-[13px] text-text-secondary tabular-nums">{player.handicap != null ? (player.handicap < 0 ? '+' + Math.abs(player.handicap) : player.handicap) : 'TBD'}</span>
             <span className="w-20 text-center text-[13px] font-medium tabular-nums text-text-secondary">{player.wins}-{player.losses}-{player.draws}</span>
           </div>
         ))}

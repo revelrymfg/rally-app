@@ -1,5 +1,10 @@
 import { players } from '../data/mockData'
 
+function formatHcp(val) {
+  if (val < 0) return `+${Math.abs(val)}`
+  return String(val)
+}
+
 // Show all players sorted alphabetically for identity selection
 const allPlayers = [...players].sort((a, b) => a.name.localeCompare(b.name))
 
@@ -52,7 +57,7 @@ export default function WelcomeModal({ onSelect }) {
                     {player.captain ? '👑 ' : ''}{player.name}
                   </span>
                   <span className="text-[11px] text-text-muted">
-                    {player.handicap != null ? `HCP ${player.handicap}` : 'HCP TBD'}
+                    {player.handicap != null ? `HCP ${formatHcp(player.handicap)}` : 'HCP TBD'}
                   </span>
                 </button>
               )
