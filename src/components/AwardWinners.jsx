@@ -14,7 +14,8 @@ function RoundAwards({ round }) {
     entries.sort((a, b) => b[1] - a[1])
     const [name, votes] = entries[0]
     const player = players.find(p => p.name === name)
-    awards.push({ category, winner: name, votes, team: player?.team || 'ca', closed })
+    const team = player?.team || 'ca'
+    awards.push({ category, winner: name, votes, team, closed })
   }
 
   if (awards.length === 0) return null
@@ -26,7 +27,7 @@ function RoundAwards({ round }) {
       </p>
       <div className="space-y-1.5">
         {awards.map((award) => {
-          const teamColor = award.team === 'ca' ? '#C8102E' : '#003DA5'
+          const teamColor = award.team === 'ca' ? '#C8102E' : award.team === 'pdx' ? '#003DA5' : '#6B7280'
           const firstName = award.winner.split(' ')[0]
           return (
             <div
@@ -69,4 +70,17 @@ export default function AwardWinners() {
       ))}
     </div>
   )
+}
+
+// Hook to check if any awards have votes (for conditional section header)
+export function useHasAwardVotes() {
+  const completedRounds = rounds.filter(r => r.status === 'complete')
+  const round1Votes = useVotes(completedRounds[0]?.id || 0)
+  const round2Votes = useVotes(completedRounds[1]?.id || 0)
+
+  const hasTallies = (tallies) => Object.values(tallies).some(
+    cat => Object.values(cat).some(v => v > 0)
+  )
+
+  return hasTallies(round1Votes.tallies) || hasTallies(round2Votes.tallies)
 }

@@ -4,7 +4,7 @@ import SectionHeader from '../SectionHeader'
 import MatchCard from '../MatchCard'
 import LeaderboardList from '../LeaderboardList'
 import FeedCard from '../FeedCard'
-import AwardWinners from '../AwardWinners'
+import AwardWinners, { useHasAwardVotes } from '../AwardWinners'
 import SideGames from '../SideGames'
 import MomentumBar from '../MomentumBar'
 import DraftButton from '../DraftButton'
@@ -13,9 +13,11 @@ import { eventData, scores, matches, leaderboard, rounds, playerShortNames } fro
 
 export default function HomeView({ currentUser }) {
   const { posts: feedPosts } = useFeed()
+  const hasAwards = useHasAwardVotes()
   const shortName = currentUser ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0] : null
-  const teamLabel = currentUser?.team === 'ca' ? 'CA' : 'PDX'
-  const teamColor = currentUser?.team === 'ca' ? '#C8102E' : '#003DA5'
+  const hasTeam = currentUser?.team === 'ca' || currentUser?.team === 'pdx'
+  const teamLabel = currentUser?.team === 'ca' ? 'CA' : currentUser?.team === 'pdx' ? 'PDX' : 'Team TBD'
+  const teamColor = currentUser?.team === 'ca' ? '#C8102E' : currentUser?.team === 'pdx' ? '#003DA5' : '#6B7280'
 
   // Find Round 1 pairing
   let round1Match = null
@@ -79,8 +81,12 @@ export default function HomeView({ currentUser }) {
       <SectionHeader title="Side Games" />
       <SideGames />
 
-      <SectionHeader title="Awards" />
-      <AwardWinners />
+      {hasAwards && (
+        <>
+          <SectionHeader title="Awards" />
+          <AwardWinners />
+        </>
+      )}
 
       <SectionHeader title="Feed" />
       {feedPosts.slice(0, 3).map((post) => (

@@ -16,6 +16,8 @@ export default function DraftButton() {
 
   if (!ready) return null
   if (draft.status === 'complete') return null
+  // Non-admin users only see the button when draft is active (not waiting)
+  if (!isAdmin && draft.status === 'waiting') return null
 
   function handleAdminEntry() {
     if (isAdmin) {
