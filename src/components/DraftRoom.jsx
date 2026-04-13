@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Undo2, Trophy, Clock } from 'lucide-react'
+import { X, Undo2, Trophy } from 'lucide-react'
 import { useDraft } from '../hooks/useDraft'
 
 export default function DraftRoom({ isAdmin, onClose }) {
@@ -22,11 +22,11 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col"
+      className="fixed inset-0 z-[100] flex flex-col overflow-hidden"
       style={{ background: 'radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 70%)' }}
     >
       {/* Header */}
-      <div className="max-w-[430px] w-full mx-auto flex items-center justify-between px-5 pt-5 pb-2">
+      <div className="w-full max-w-[430px] mx-auto flex items-center justify-between px-5 pt-5 pb-2 shrink-0">
         <h2 className="text-[15px] font-bold tracking-[0.15em] uppercase text-accent-warm">
           Draft Room
         </h2>
@@ -37,7 +37,7 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
       {/* Waiting state */}
       {draft.status === 'waiting' && (
-        <div className="flex-1 flex flex-col items-center justify-center max-w-[430px] w-full mx-auto px-5">
+        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[430px] mx-auto px-5">
           <Trophy size={48} className="text-accent-warm mb-4" />
           <h3 className="text-[20px] font-bold text-text-primary mb-2">Draft Night</h3>
           <p className="text-[14px] text-text-secondary text-center mb-8">
@@ -58,11 +58,14 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
       {/* Active draft */}
       {draft.status === 'active' && (
-        <div className="flex-1 overflow-y-auto max-w-[430px] w-full mx-auto px-5 pb-20">
+        <div
+          className="flex-1 overflow-y-auto w-full max-w-[430px] mx-auto px-5 pb-20"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {/* Current pick header */}
           <div className="text-center mb-4 animate-fade-in" key={draft.currentPick}>
             <p
-              className="text-[24px] font-[800] tracking-[0.1em] uppercase"
+              className="text-[22px] font-[800] tracking-[0.1em] uppercase"
               style={{ color: teamColor }}
             >
               {captainFirst}'S PICK
@@ -73,7 +76,7 @@ export default function DraftRoom({ isAdmin, onClose }) {
           </div>
 
           {/* Team rosters */}
-          <div className="flex gap-3 mb-5">
+          <div className="flex gap-2 mb-5 w-full min-w-0">
             <RosterColumn label="CA" color="#C8102E" players={draft.caRoster} />
             <RosterColumn label="PDX" color="#003DA5" players={draft.pdxRoster} />
           </div>
@@ -82,13 +85,13 @@ export default function DraftRoom({ isAdmin, onClose }) {
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-text-muted mb-2">
             Available ({availablePlayers.length})
           </p>
-          <div className="grid grid-cols-2 gap-1.5 mb-4">
+          <div className="grid grid-cols-2 gap-1.5 mb-4 w-full">
             {availablePlayers.map((player) => (
               <button
                 key={player.name}
                 onClick={() => isAdmin && setConfirming(player)}
                 disabled={!isAdmin}
-                className="rounded-xl px-3 py-2.5 text-left transition-all active:scale-[0.97] disabled:opacity-60"
+                className="rounded-xl px-3 py-2.5 text-left transition-all active:scale-[0.97] disabled:opacity-60 min-w-0"
                 style={{
                   background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
                   border: '1px solid #2A2A2E',
@@ -117,7 +120,10 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
       {/* Draft complete */}
       {isComplete && (
-        <div className="flex-1 overflow-y-auto max-w-[430px] w-full mx-auto px-5 pb-20">
+        <div
+          className="flex-1 overflow-y-auto w-full max-w-[430px] mx-auto px-5 pb-20"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           <div className="text-center py-8">
             <div className="text-[48px] mb-3">🏁</div>
             <h3 className="text-[22px] font-[800] tracking-[0.15em] uppercase text-accent-warm mb-2">
@@ -128,7 +134,7 @@ export default function DraftRoom({ isAdmin, onClose }) {
             </p>
           </div>
 
-          <div className="flex gap-3 mb-6">
+          <div className="flex gap-2 mb-6 w-full min-w-0">
             <RosterColumn label="CA" color="#C8102E" players={draft.caRoster} />
             <RosterColumn label="PDX" color="#003DA5" players={draft.pdxRoster} />
           </div>
@@ -144,9 +150,9 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
       {/* Confirm pick modal */}
       {confirming && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm px-6">
           <div
-            className="mx-8 rounded-2xl px-6 py-6 w-full max-w-[340px]"
+            className="rounded-2xl px-6 py-6 w-full max-w-[340px]"
             style={{
               background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
               border: `2px solid ${teamColor}`,
@@ -182,7 +188,7 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
       {/* Spectator banner */}
       {!isAdmin && draft.status === 'active' && (
-        <div className="fixed bottom-0 left-0 right-0 bg-bg-secondary/95 backdrop-blur-sm border-t border-surface-border">
+        <div className="fixed bottom-0 left-0 right-0 bg-bg-secondary/95 backdrop-blur-sm border-t border-surface-border shrink-0">
           <div className="max-w-[430px] mx-auto px-5 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
             <p className="text-[12px] text-text-muted text-center tracking-wider uppercase">
               Spectator Mode — Watching Live
@@ -196,16 +202,16 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
 function RosterColumn({ label, color, players }) {
   return (
-    <div className="flex-1">
+    <div className="flex-1 min-w-0">
       <div className="flex items-center gap-1.5 mb-2">
-        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
         <span className="text-[12px] font-bold tracking-[0.1em] uppercase" style={{ color }}>
           {label}
         </span>
         <span className="text-[11px] text-text-muted">{players.length}</span>
       </div>
       <div
-        className="rounded-xl overflow-hidden min-h-[100px]"
+        className="rounded-xl overflow-hidden min-h-[80px]"
         style={{
           background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
           border: '1px solid #2A2A2E',
@@ -220,7 +226,7 @@ function RosterColumn({ label, color, players }) {
               i === players.length - 1 && players.length > 1 ? 'animate-fade-in' : ''
             }`}
           >
-            <span className="text-[12px] font-medium text-text-primary">
+            <span className="text-[12px] font-medium text-text-primary truncate block">
               {i === 0 ? '👑 ' : ''}{name.split(' ')[0]}
             </span>
           </div>
