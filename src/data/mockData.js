@@ -36,14 +36,14 @@ export const rounds = [
   },
 ]
 
-// All 25 players — captains pre-assigned, rest go to draft pool
+// All 26 players — captains pre-assigned, rest go to draft pool
 // handicap: null = no GHIN on file, ghin: GHIN number or null
 export const players = [
   // Captains
   { name: 'Nick DeRosa', team: 'ca', handicap: 17.9, ghin: '11682633', captain: true, wins: 0, losses: 0, draws: 0 },
   { name: 'Rob Donegan', team: 'pdx', handicap: 19.1, ghin: null, captain: true, wins: 0, losses: 0, draws: 0 },
 
-  // Draft pool (23 players — team TBD until draft)
+  // Draft pool (24 players — team TBD until draft)
   { name: 'Micah Pueschel', team: null, handicap: 1.7, ghin: '699697', wins: 0, losses: 0, draws: 0 },
   { name: 'James Menke', team: null, handicap: 20.8, ghin: '12055493', wins: 0, losses: 0, draws: 0 },
   { name: 'Todd Howe', team: null, handicap: 3.8, ghin: '10209715', wins: 0, losses: 0, draws: 0 },
@@ -67,6 +67,7 @@ export const players = [
   { name: 'Travis Mantych', team: null, handicap: 16.9, ghin: '12438621', wins: 0, losses: 0, draws: 0 },
   { name: 'Troy Knight', team: null, handicap: 6.6, ghin: '11326538', wins: 0, losses: 0, draws: 0 },
   { name: 'Pasquale DeRosa', team: null, handicap: 10.0, ghin: null, wins: 0, losses: 0, draws: 0 },
+  { name: 'Michael Ventura', team: null, handicap: 8.0, ghin: null, wins: 0, losses: 0, draws: 0 },
 ]
 
 // Map full names to short names used in match cards
@@ -96,6 +97,7 @@ export const playerShortNames = {
   'Travis Mantych': 'Travis',
   'Troy Knight': 'Troy',
   'Pasquale DeRosa': 'Pasquale',
+  'Michael Ventura': 'Michael V.',
 }
 
 // Leaderboard — empty until matches are played
