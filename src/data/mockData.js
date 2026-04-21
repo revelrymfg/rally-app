@@ -36,14 +36,14 @@ export const rounds = [
   },
 ]
 
-// All 26 players — captains pre-assigned, rest go to draft pool
+// All 25 players — captains pre-assigned, rest go to draft pool
 // handicap: null = no GHIN on file, ghin: GHIN number or null
 export const players = [
   // Captains
   { name: 'Nick DeRosa', team: 'ca', handicap: 17.9, ghin: '11682633', captain: true, wins: 0, losses: 0, draws: 0 },
   { name: 'Rob Donegan', team: 'pdx', handicap: 19.1, ghin: null, captain: true, wins: 0, losses: 0, draws: 0 },
 
-  // Draft pool (24 players — team TBD until draft)
+  // Draft pool (23 players — team TBD until draft)
   { name: 'Micah Pueschel', team: null, handicap: 1.7, ghin: '699697', wins: 0, losses: 0, draws: 0 },
   { name: 'James Menke', team: null, handicap: 20.8, ghin: '12055493', wins: 0, losses: 0, draws: 0 },
   { name: 'Todd Howe', team: null, handicap: 3.8, ghin: '10209715', wins: 0, losses: 0, draws: 0 },
@@ -62,7 +62,6 @@ export const players = [
   { name: 'Reid Vale', team: null, handicap: 0.8, ghin: null, wins: 0, losses: 0, draws: 0 },
   { name: 'Brandon Lehmann', team: null, handicap: 3.3, ghin: '3065904', wins: 0, losses: 0, draws: 0 },
   { name: 'Joseph Kim', team: null, handicap: -2.0, ghin: '10237090', wins: 0, losses: 0, draws: 0 },
-  { name: 'Luis Lopez', team: null, handicap: 8.3, ghin: '9355033', wins: 0, losses: 0, draws: 0 },
   { name: 'Darren Kavapalu', team: null, handicap: 8.6, ghin: null, wins: 0, losses: 0, draws: 0 },
   { name: 'Brandon Ball', team: null, handicap: 11.0, ghin: null, wins: 0, losses: 0, draws: 0 },
   { name: 'Travis Mantych', team: null, handicap: 16.9, ghin: '12438621', wins: 0, losses: 0, draws: 0 },
@@ -92,7 +91,6 @@ export const playerShortNames = {
   'Reid Vale': 'Reid',
   'Brandon Lehmann': 'Brandon L.',
   'Joseph Kim': 'Joseph',
-  'Luis Lopez': 'Luis',
   'Darren Kavapalu': 'Darren',
   'Brandon Ball': 'Brandon B.',
   'Travis Mantych': 'Travis',
