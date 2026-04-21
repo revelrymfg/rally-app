@@ -8,6 +8,7 @@ import AwardWinners, { useHasAwardVotes } from '../AwardWinners'
 import SideGames from '../SideGames'
 import MomentumBar from '../MomentumBar'
 import DraftButton from '../DraftButton'
+import ResetTournament from '../ResetTournament'
 import { useFeed } from '../../hooks/useFirestore'
 import { eventData, scores, matches, leaderboard, rounds, playerShortNames } from '../../data/mockData'
 
@@ -92,6 +93,8 @@ export default function HomeView({ currentUser }) {
       {feedPosts.slice(0, 3).map((post) => (
         <FeedCard key={post.id} post={post} />
       ))}
+
+      <ResetTournament />
 
       <div className="h-8" />
     </>
