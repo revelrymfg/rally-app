@@ -4,7 +4,7 @@ import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../firebase'
 
 const ADMIN_PASSWORD = 'ojai2026'
-const COLLECTIONS_TO_CLEAR = ['feed', 'votes', 'sideGames', 'awardsClosed']
+const COLLECTIONS_TO_CLEAR = ['feed', 'votes', 'sideGames', 'awardsClosed', 'matches']
 
 async function clearCollection(name) {
   const snap = await getDocs(collection(db, name))

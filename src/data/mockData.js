@@ -3,89 +3,36 @@ export const awardCategories = ['MVP', 'Sandbagger of the Round', 'Hungover Hero
 export const eventData = {
   title: 'RALLY IN THE VALLEY',
   day: 1,
-  session: 'Afternoon Matches',
+  session: 'Pre-Tournament',
 }
 
 export const scores = {
-  ca: 9.5,
-  pdx: 8.5,
+  ca: 0,
+  pdx: 0,
 }
 
-// Current live matches (shown on Home)
-export const matches = [
-  {
-    id: 1,
-    teamA: ['Micah P.', 'James'],
-    teamB: ['Patrick', 'Aaron K.'],
-    status: '2UP',
-    thru: 11,
-    leadingTeam: 'ca',
-  },
-  {
-    id: 2,
-    teamA: ['Todd', 'John'],
-    teamB: ['Micah B.', 'Scott'],
-    status: 'AS',
-    thru: 14,
-    leadingTeam: null,
-  },
-  {
-    id: 3,
-    teamA: ['Brian', 'Kelso'],
-    teamB: ['Reid', 'Brandon L.'],
-    status: '1DN',
-    thru: 14,
-    leadingTeam: 'pdx',
-  },
-]
+// Current live matches (shown on Home) — empty until tournament starts
+export const matches = []
 
-// All rounds
+// All rounds — structure ready, no results yet
 export const rounds = [
   {
     id: 1,
-    name: 'Round 1 — Four-Ball',
-    status: 'complete',
-    matches: [
-      { id: 101, teamA: ['Micah P.', 'James'], teamB: ['Patrick', 'Aaron K.'], status: '3&2', thru: 'F', leadingTeam: 'ca' },
-      { id: 102, teamA: ['Todd', 'John'], teamB: ['Micah B.', 'Scott'], status: '1UP', thru: 'F', leadingTeam: 'ca' },
-      { id: 103, teamA: ['Brian', 'Kelso'], teamB: ['Reid', 'Brandon L.'], status: '2&1', thru: 'F', leadingTeam: 'pdx' },
-      { id: 104, teamA: ['Matt', 'Nick D.'], teamB: ['Joseph', 'Luis'], status: 'AS', thru: 'F', leadingTeam: null },
-      { id: 105, teamA: ['Rob D.', 'Connor'], teamB: ['Darren', 'Brandon B.'], status: '1UP', thru: 'F', leadingTeam: 'ca' },
-      { id: 106, teamA: ['Ali', 'Jason'], teamB: ['Travis', 'Troy'], status: '2UP', thru: 'F', leadingTeam: 'pdx' },
-    ],
+    name: 'Round 1 — 2-Man Best Ball',
+    status: 'upcoming',
+    matches: [],
   },
   {
     id: 2,
-    name: 'Round 2 — Foursomes',
-    status: 'complete',
-    matches: [
-      { id: 201, teamA: ['Micah P.', 'Todd'], teamB: ['Patrick', 'Micah B.'], status: '2&1', thru: 'F', leadingTeam: 'ca' },
-      { id: 202, teamA: ['James', 'Brian'], teamB: ['Aaron K.', 'Reid'], status: '1UP', thru: 'F', leadingTeam: 'pdx' },
-      { id: 203, teamA: ['John', 'Kelso'], teamB: ['Scott', 'Brandon L.'], status: '3&2', thru: 'F', leadingTeam: 'ca' },
-      { id: 204, teamA: ['Matt', 'Rob D.'], teamB: ['Joseph', 'Darren'], status: '1UP', thru: 'F', leadingTeam: 'pdx' },
-      { id: 205, teamA: ['Nick D.', 'Connor'], teamB: ['Luis', 'Brandon B.'], status: 'AS', thru: 'F', leadingTeam: null },
-      { id: 206, teamA: ['Ali', 'Robby'], teamB: ['Travis', 'Troy'], status: '1UP', thru: 'F', leadingTeam: 'ca' },
-    ],
+    name: 'Round 2 — 2-Man Scramble',
+    status: 'upcoming',
+    matches: [],
   },
   {
     id: 3,
-    name: 'Round 3 — Singles',
-    status: 'live',
-    matches: [
-      { id: 301, teamA: ['Micah P.'], teamB: ['Patrick'], status: '2UP', thru: 11, leadingTeam: 'ca' },
-      { id: 302, teamA: ['James'], teamB: ['Aaron K.'], status: '1UP', thru: 13, leadingTeam: 'ca' },
-      { id: 303, teamA: ['Todd'], teamB: ['Micah B.'], status: 'AS', thru: 14, leadingTeam: null },
-      { id: 304, teamA: ['John'], teamB: ['Scott'], status: 'AS', thru: 12, leadingTeam: null },
-      { id: 305, teamA: ['Brian'], teamB: ['Reid'], status: '1DN', thru: 14, leadingTeam: 'pdx' },
-      { id: 306, teamA: ['Kelso'], teamB: ['Brandon L.'], status: '3UP', thru: 10, leadingTeam: 'ca' },
-      { id: 307, teamA: ['Matt'], teamB: ['Joseph'], status: '1UP', thru: 11, leadingTeam: 'pdx' },
-      { id: 308, teamA: ['Nick D.'], teamB: ['Luis'], status: '2UP', thru: 9, leadingTeam: 'ca' },
-      { id: 309, teamA: ['Rob D.'], teamB: ['Darren'], status: '1DN', thru: 13, leadingTeam: 'pdx' },
-      { id: 310, teamA: ['Connor'], teamB: ['Brandon B.'], status: 'AS', thru: 11, leadingTeam: null },
-      { id: 311, teamA: ['Ali'], teamB: ['Travis'], status: '1UP', thru: 8, leadingTeam: 'ca' },
-      { id: 312, teamA: ['Jason'], teamB: ['Troy'], status: '2DN', thru: 12, leadingTeam: 'pdx' },
-      { id: 313, teamA: ['Robby'], teamB: ['TBD'], status: '-', thru: '-', leadingTeam: null },
-    ],
+    name: 'Round 3 — Singles Match Play',
+    status: 'upcoming',
+    matches: [],
   },
 ]
 
@@ -153,21 +100,8 @@ export const playerShortNames = {
   'Pasquale DeRosa': 'Pasquale',
 }
 
-export const leaderboard = [
-  { rank: 1, name: 'Micah P.', points: '+2.5', team: 'ca' },
-  { rank: 2, name: 'James', points: '+2.0', team: 'ca' },
-  { rank: 3, name: 'Patrick', points: '+1.5', team: 'pdx' },
-  { rank: 4, name: 'Todd', points: '+1.0', team: 'ca' },
-  { rank: 5, name: 'Aaron K.', points: '+0.5', team: 'pdx' },
-]
+// Leaderboard — empty until matches are played
+export const leaderboard = []
 
-export const feed = [
-  { id: 1, author: 'Micah P.', message: 'PDX looking shaky early…', team: 'ca', time: '2m ago' },
-  { id: 2, author: 'Patrick', message: "Let's see if CA can hold the lead 😉", team: 'pdx', time: '8m ago' },
-  { id: 3, author: 'Kelso', message: '3UP through 10. Feeling dangerous 🔥', team: 'ca', time: '12m ago' },
-  { id: 4, author: 'Scott', message: 'All square and grinding. Love this format.', team: 'pdx', time: '18m ago' },
-  { id: 5, author: 'John', message: 'Foursomes was brutal but we survived', team: 'ca', time: '25m ago' },
-  { id: 6, author: 'Reid', message: 'Brian is cooked. 1DN and fading 📉', team: 'pdx', time: '31m ago' },
-  { id: 7, author: 'James', message: 'Aaron K. cannot putt today. Sad to see it.', team: 'ca', time: '40m ago' },
-  { id: 8, author: 'Brandon B.', message: 'Connor has no answer for the back nine', team: 'pdx', time: '52m ago' },
-]
+// Seed feed — empty, real posts come from Firestore
+export const feed = []
