@@ -1,12 +1,29 @@
 import { useState } from 'react'
 import { players } from '../../data/mockData'
+import { useDraft } from '../../hooks/useDraft'
 import PowerRankings from '../PowerRankings'
+
+// Look up full player object by name (so we have handicap, ghin, etc.)
+function lookupPlayer(name) {
+  return players.find((p) => p.name === name) || { name, handicap: null, wins: 0, losses: 0, draws: 0 }
+}
 
 export default function PlayersView() {
   const [tab, setTab] = useState('rankings')
-  const caPlayers = players.filter((p) => p.team === 'ca')
-  const pdxPlayers = players.filter((p) => p.team === 'pdx')
-  const undrafted = players.filter((p) => p.team === null)
+  const { draft, ready } = useDraft()
+
+  // Resolve rosters from live Firestore draft state
+  const caRosterNames = draft?.caRoster || []
+  const pdxRosterNames = draft?.pdxRoster || []
+  const caPlayers = caRosterNames.map(lookupPlayer)
+  const pdxPlayers = pdxRosterNames.map(lookupPlayer)
+
+  // Draft pool: players not yet drafted, only show while draft is active/waiting
+  const draftedSet = new Set([...caRosterNames, ...pdxRosterNames])
+  const undrafted = ready
+    ? players.filter((p) => !draftedSet.has(p.name))
+    : []
+  const showDraftPool = draft?.status !== 'complete' && undrafted.length > 0
 
   return (
     <div className="pt-6">
@@ -34,10 +51,19 @@ export default function PlayersView() {
 
       {tab === 'roster' && (
         <>
-          <TeamSection label="CA" color="#C8102E" players={caPlayers} />
-          <TeamSection label="PDX" color="#003DA5" players={pdxPlayers} />
-          {undrafted.length > 0 && (
+          {caPlayers.length > 0 && (
+            <TeamSection label="CA" color="#C8102E" players={caPlayers} />
+          )}
+          {pdxPlayers.length > 0 && (
+            <TeamSection label="PDX" color="#003DA5" players={pdxPlayers} />
+          )}
+          {showDraftPool && (
             <TeamSection label="Draft Pool" color="#6B7280" players={undrafted} />
+          )}
+          {caPlayers.length === 0 && pdxPlayers.length === 0 && !showDraftPool && (
+            <p className="text-[13px] text-text-muted text-center py-6 mx-5">
+              Rosters will appear once the draft starts
+            </p>
           )}
         </>
       )}
