@@ -1,6 +1,6 @@
 import { Flag } from 'lucide-react'
 
-export default function MatchCard({ match }) {
+export default function MatchCard({ match, onClick }) {
   const borderColor =
     match.leadingTeam === 'ca'
       ? '#C8102E'
@@ -20,7 +20,12 @@ export default function MatchCard({ match }) {
 
   return (
     <div
-      className={`mx-5 mb-2 rounded-xl overflow-hidden flex ${match.leadingTeam ? 'animate-flash' : ''}`}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      className={`mx-5 mb-2 rounded-xl overflow-hidden flex ${match.leadingTeam ? 'animate-flash' : ''} ${
+        onClick ? 'active:scale-[0.99] transition-transform cursor-pointer' : ''
+      }`}
       style={{
         background: 'linear-gradient(135deg, #1C1C1F 0%, #19191C 100%)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 3px rgba(0,0,0,0.3)',
