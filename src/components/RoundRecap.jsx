@@ -12,12 +12,12 @@ function generateRecap(round) {
     return s.includes('3') || s.includes('4') || s.includes('5')
   })
 
-  const leader = caWins > pdxWins ? 'CA' : pdxWins > caWins ? 'PDX' : null
+  const leader = caWins > pdxWins ? 'Drifters' : pdxWins > caWins ? 'Grifters' : null
 
   let recap = `${round.name.toUpperCase()} — THE RECAP\n\n`
 
   if (leader) {
-    recap += `${leader} dominated ${round.name.split(' — ')[1]} play, taking ${leader === 'CA' ? caWins : pdxWins} of ${total} matches`
+    recap += `${leader} dominated ${round.name.split(' — ')[1]} play, taking ${leader === 'Drifters' ? caWins : pdxWins} of ${total} matches`
     if (ties > 0) recap += ` with ${ties} going all square`
     recap += '.\n\n'
   } else {
@@ -44,7 +44,7 @@ function generateRecap(round) {
 
   // Dramatic close
   if (leader) {
-    const trailing = leader === 'CA' ? 'PDX' : 'CA'
+    const trailing = leader === 'Drifters' ? 'Grifters' : 'Drifters'
     recap += `${trailing} will need to regroup. ${leader} has the momentum, the swagger, and right now — the valley.\n\n`
   } else {
     recap += `This Cup is far from over. The valley holds its breath.\n\n`

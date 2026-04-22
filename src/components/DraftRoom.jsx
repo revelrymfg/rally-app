@@ -77,8 +77,8 @@ export default function DraftRoom({ isAdmin, onClose }) {
 
           {/* Team rosters */}
           <div className="flex gap-2 mb-5 w-full min-w-0">
-            <RosterColumn label="CA" color="#C8102E" players={draft.caRoster} />
-            <RosterColumn label="PDX" color="#003DA5" players={draft.pdxRoster} />
+            <RosterColumn label="Drifters" color="#C8102E" players={draft.caRoster} />
+            <RosterColumn label="Grifters" color="#003DA5" players={draft.pdxRoster} />
           </div>
 
           {/* Available players */}
@@ -135,8 +135,8 @@ export default function DraftRoom({ isAdmin, onClose }) {
           </div>
 
           <div className="flex gap-2 mb-6 w-full min-w-0">
-            <RosterColumn label="CA" color="#C8102E" players={draft.caRoster} />
-            <RosterColumn label="PDX" color="#003DA5" players={draft.pdxRoster} />
+            <RosterColumn label="Drifters" color="#C8102E" players={draft.caRoster} />
+            <RosterColumn label="Grifters" color="#003DA5" players={draft.pdxRoster} />
           </div>
 
           <button
@@ -164,7 +164,7 @@ export default function DraftRoom({ isAdmin, onClose }) {
             <p className="text-[13px] text-text-muted text-center mb-5">
               Pick {draft.currentPick} for{' '}
               <span className="font-bold" style={{ color: teamColor }}>
-                {currentTeam === 'ca' ? 'CA' : 'PDX'}
+                {currentTeam === 'ca' ? 'Drifters' : 'Grifters'}
               </span>
             </p>
             <div className="flex gap-3">

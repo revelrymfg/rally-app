@@ -1,11 +1,13 @@
+import { TEAM_NAMES } from '../data/mockData'
+
 export default function ScoreHero({ scores, day, session }) {
   return (
     <section className="px-5 pb-6">
       <div className="flex items-center justify-center gap-4 px-2">
-        {/* CA */}
+        {/* Drifters (CA) */}
         <div className="flex-1 text-right">
-          <p className="text-[18px] font-bold tracking-[0.18em] uppercase text-team-red mb-1">
-            CA
+          <p className="text-[15px] font-bold tracking-[0.1em] uppercase text-team-red mb-1 truncate">
+            {TEAM_NAMES.ca}
           </p>
           <p className="text-[42px] font-bold leading-none tracking-tight text-text-primary animate-pulse-score">
             {scores.ca}
@@ -20,10 +22,10 @@ export default function ScoreHero({ scores, day, session }) {
           <div className="w-px h-10 bg-surface-border" />
         </div>
 
-        {/* PDX */}
+        {/* Grifters (PDX) */}
         <div className="flex-1 text-left">
-          <p className="text-[18px] font-bold tracking-[0.18em] uppercase text-team-blue mb-1">
-            PDX
+          <p className="text-[15px] font-bold tracking-[0.1em] uppercase text-team-blue mb-1 truncate">
+            {TEAM_NAMES.pdx}
           </p>
           <p className="text-[42px] font-bold leading-none tracking-tight text-text-primary animate-pulse-score">
             <span className="inline-block w-1 h-1 rounded-full bg-team-blue mr-2 mb-2 align-middle" />

@@ -123,9 +123,9 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
         >
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-team-red mb-0.5">CA</p>
+              <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-team-red mb-0.5">Drifters</p>
               <p className="text-[14px] font-semibold text-text-primary truncate">{teamALabel || '—'}</p>
-              <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-team-blue mt-2 mb-0.5">PDX</p>
+              <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-team-blue mt-2 mb-0.5">Grifters</p>
               <p className="text-[14px] font-semibold text-text-primary truncate">{teamBLabel || '—'}</p>
             </div>
             <div className="text-right ml-4 shrink-0 flex items-center gap-2">
@@ -189,9 +189,9 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
 
 function HoleRow({ hole, winner, readOnly, onSelect }) {
   const options = [
-    { key: 'ca', label: 'CA', color: '#C8102E' },
+    { key: 'ca', label: 'DRIFT', color: '#C8102E' },
     { key: 'halved', label: '½', color: '#6B7280' },
-    { key: 'pdx', label: 'PDX', color: '#003DA5' },
+    { key: 'pdx', label: 'GRIFT', color: '#003DA5' },
   ]
 
   return (

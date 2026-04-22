@@ -52,10 +52,10 @@ export default function PlayersView() {
       {tab === 'roster' && (
         <>
           {caPlayers.length > 0 && (
-            <TeamSection label="CA" color="#C8102E" players={caPlayers} />
+            <TeamSection label="Drifters" color="#C8102E" players={caPlayers} />
           )}
           {pdxPlayers.length > 0 && (
-            <TeamSection label="PDX" color="#003DA5" players={pdxPlayers} />
+            <TeamSection label="Grifters" color="#003DA5" players={pdxPlayers} />
           )}
           {showDraftPool && (
             <TeamSection label="Draft Pool" color="#6B7280" players={undrafted} />

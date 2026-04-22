@@ -36,7 +36,7 @@ export default function HomeView({ currentUser }) {
   const [scoringMatch, setScoringMatch] = useState(null)
   const isAdmin = typeof window !== 'undefined' && localStorage.getItem('draftAdmin') === 'true'
   const shortName = currentUser ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0] : null
-  const teamLabel = userTeam === 'ca' ? 'CA' : userTeam === 'pdx' ? 'PDX' : 'Team TBD'
+  const teamLabel = userTeam === 'ca' ? 'Drifters' : userTeam === 'pdx' ? 'Grifters' : 'Team TBD'
   const teamColor = userTeam === 'ca' ? '#C8102E' : userTeam === 'pdx' ? '#003DA5' : '#6B7280'
 
   // Find the user's current match — prefer live, fall back to most recent round that has their match

@@ -277,7 +277,7 @@ function MatchBuilder({ match, roundInfo, disabled, onSlotClick, onSlotClear, on
       <div className="p-3 space-y-2">
         {/* CA side */}
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-team-red mb-1.5">CA</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-team-red mb-1.5">Drifters</p>
           <div className="space-y-1.5">
             {Array.from({ length: matchSize }).map((_, i) => (
               <PlayerSlot
@@ -296,7 +296,7 @@ function MatchBuilder({ match, roundInfo, disabled, onSlotClick, onSlotClear, on
         </div>
         {/* PDX side */}
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-team-blue mb-1.5">PDX</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-team-blue mb-1.5">Grifters</p>
           <div className="space-y-1.5">
             {Array.from({ length: matchSize }).map((_, i) => (
               <PlayerSlot
@@ -349,7 +349,7 @@ function PlayerSlot({ name, teamColor, disabled, onClick, onClear }) {
 
 function PlayerPicker({ team, roster, assigned, onPick, onClose }) {
   const color = team === 'ca' ? '#C8102E' : '#003DA5'
-  const label = team === 'ca' ? 'CA' : 'PDX'
+  const label = team === 'ca' ? 'Drifters' : 'Grifters'
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm px-5">

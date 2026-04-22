@@ -79,7 +79,7 @@ export function useNotifications(currentUser) {
           // Skip if current user is the captain making the pick
           if (pick.captain === currentUser?.name) continue
 
-          const teamLabel = pick.team === 'ca' ? 'CA' : 'PDX'
+          const teamLabel = pick.team === 'ca' ? 'Drifters' : 'Grifters'
           const captainFirst = pick.captain.split(' ')[0]
           const playerFirst = pick.player.split(' ')[0]
           show({

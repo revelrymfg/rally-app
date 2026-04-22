@@ -30,14 +30,14 @@ export default function MomentumBar() {
   return (
     <div className="mx-5 mb-5">
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-team-red">
-          CA {caWins}
+        <span className="text-[11px] font-bold tracking-[0.08em] uppercase text-team-red">
+          Drifters {caWins}
         </span>
         <span className="text-[10px] text-text-muted uppercase tracking-wider font-medium">
           Match Leads
         </span>
-        <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-team-blue">
-          {pdxWins} PDX
+        <span className="text-[11px] font-bold tracking-[0.08em] uppercase text-team-blue">
+          {pdxWins} Grifters
         </span>
       </div>
 

@@ -1,5 +1,17 @@
 export const awardCategories = ['MVP', 'Sandbagger of the Round', 'Hungover Hero']
 
+// Display labels for teams. Data keys stay 'ca' / 'pdx' for Firestore compatibility.
+export const TEAM_NAMES = {
+  ca: 'Drifters',
+  pdx: 'Grifters',
+}
+
+// Short / compact labels where space is tight — same as full names here but
+// callers can pull from TEAM_NAMES directly if they want full.
+export function teamLabel(teamKey) {
+  return TEAM_NAMES[teamKey] || 'TBD'
+}
+
 export const eventData = {
   title: 'RALLY IN THE VALLEY',
   day: 1,

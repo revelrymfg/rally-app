@@ -90,7 +90,7 @@ export function useDraft() {
     await saveDraft(newState)
 
     // Auto-post to feed
-    const teamLabel = team === 'ca' ? 'CA' : 'PDX'
+    const teamLabel = team === 'ca' ? 'Drifters' : 'Grifters'
     try {
       await addDoc(collection(db, 'feed'), {
         author: 'Draft',
