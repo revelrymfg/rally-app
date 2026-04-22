@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import EventHeader from '../EventHeader'
 import ScoreHero from '../ScoreHero'
 import SectionHeader from '../SectionHeader'
@@ -9,6 +10,7 @@ import SideGames from '../SideGames'
 import MomentumBar from '../MomentumBar'
 import DraftButton from '../DraftButton'
 import ResetTournament from '../ResetTournament'
+import ScoreEntry from '../ScoreEntry'
 import { useFeed } from '../../hooks/useFirestore'
 import { useMatches, getRoundInfo } from '../../hooks/useMatches'
 import { useUserTeam } from '../../hooks/useUserTeam'
@@ -31,6 +33,8 @@ export default function HomeView({ currentUser }) {
   const hasAwards = useHasAwardVotes()
   const { matches: allMatches } = useMatches()
   const userTeam = useUserTeam(currentUser)
+  const [scoringMatch, setScoringMatch] = useState(null)
+  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('draftAdmin') === 'true'
   const shortName = currentUser ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0] : null
   const teamLabel = userTeam === 'ca' ? 'CA' : userTeam === 'pdx' ? 'PDX' : 'Team TBD'
   const teamColor = userTeam === 'ca' ? '#C8102E' : userTeam === 'pdx' ? '#003DA5' : '#6B7280'
@@ -114,7 +118,11 @@ export default function HomeView({ currentUser }) {
         <>
           <SectionHeader title="Live" live />
           {liveMatches.map((match) => (
-            <MatchCard key={match.id} match={toMatchCard(match)} />
+            <MatchCard
+              key={match.id}
+              match={toMatchCard(match)}
+              onClick={() => setScoringMatch(match)}
+            />
           ))}
         </>
       )}
@@ -148,6 +156,14 @@ export default function HomeView({ currentUser }) {
       <ResetTournament />
 
       <div className="h-8" />
+
+      {scoringMatch && (
+        <ScoreEntry
+          match={scoringMatch}
+          readOnly={!isAdmin}
+          onClose={() => setScoringMatch(null)}
+        />
+      )}
     </>
   )
 }

@@ -5,6 +5,7 @@ import MatchCard from '../MatchCard'
 import AwardsVoting from '../AwardsVoting'
 import RoundRecap from '../RoundRecap'
 import PairingsButton from '../PairingsButton'
+import ScoreEntry from '../ScoreEntry'
 import { playerShortNames } from '../../data/mockData'
 import { useVotes } from '../../hooks/useFirestore'
 import { useMatches, ROUND_INFO } from '../../hooks/useMatches'
@@ -54,7 +55,10 @@ function VoteButton({ round, currentUser, onOpen }) {
 export default function MatchesView({ currentUser }) {
   const [votingRound, setVotingRound] = useState(null)
   const [recapRound, setRecapRound] = useState(null)
+  const [scoringMatch, setScoringMatch] = useState(null)
   const { publishedMatchesByRound } = useMatches()
+
+  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('draftAdmin') === 'true'
 
   return (
     <div className="pt-6">
@@ -64,6 +68,12 @@ export default function MatchesView({ currentUser }) {
 
       {/* Admin pairings manager entry */}
       <PairingsButton />
+
+      {isAdmin && (
+        <p className="text-[11px] text-text-muted text-center mb-3 tracking-wider">
+          Tap a match to enter scores
+        </p>
+      )}
 
       {ROUND_INFO.map((info) => {
         const matches = publishedMatchesByRound(info.id)
@@ -79,7 +89,11 @@ export default function MatchesView({ currentUser }) {
               </p>
             ) : (
               matches.map((match) => (
-                <MatchCard key={match.id} match={toMatchCard(match)} />
+                <MatchCard
+                  key={match.id}
+                  match={toMatchCard(match)}
+                  onClick={() => setScoringMatch(match)}
+                />
               ))
             )}
 
@@ -121,6 +135,14 @@ export default function MatchesView({ currentUser }) {
         <RoundRecap
           round={{ ...recapRound, matches: recapRound.matches.map(toMatchCard) }}
           onClose={() => setRecapRound(null)}
+        />
+      )}
+
+      {scoringMatch && (
+        <ScoreEntry
+          match={scoringMatch}
+          readOnly={!isAdmin}
+          onClose={() => setScoringMatch(null)}
         />
       )}
     </div>

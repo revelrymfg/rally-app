@@ -7,8 +7,8 @@ import { playerShortNames } from '../../data/mockData'
 
 // BottomNav is ~56px tall + safe area; input bar sits directly above it
 const INPUT_BOTTOM_OFFSET = 'calc(56px + env(safe-area-inset-bottom, 0px))'
-// Content needs room for the input bar + bottom nav combined
-const CONTENT_BOTTOM_PAD = 'calc(120px + env(safe-area-inset-bottom, 0px))'
+// Content needs room for the input bar (~52px) + bottom nav (~56px) + breathing room
+const CONTENT_BOTTOM_PAD = 'calc(160px + env(safe-area-inset-bottom, 0px))'
 
 export default function FeedView({ currentUser }) {
   const { posts, addPost } = useFeed()
