@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Plus, Trash2, Lock, Unlock, Check } from 'lucide-react'
+import { X, Plus, Trash2, Lock, Unlock, Users, User } from 'lucide-react'
 import { useDraft } from '../hooks/useDraft'
 import { useMatches, ROUND_INFO, getRoundInfo } from '../hooks/useMatches'
 import { playerShortNames } from '../data/mockData'
@@ -8,11 +8,17 @@ function shortName(fullName) {
   return playerShortNames[fullName] || fullName.split(' ')[0]
 }
 
+// Per-match team size is the length of the teamA array.
+// Rounds 1-2 can have either 1 or 2 per side. Round 3 is always 1.
+function getMatchTeamSize(match) {
+  return (match.teamA && match.teamA.length) || 0
+}
+
 export default function PairingsManager({ onClose }) {
   const { draft } = useDraft()
   const { matchesByRound, saveMatch, deleteMatch, setRoundPublished } = useMatches()
   const [activeRound, setActiveRound] = useState(1)
-  const [pickerSlot, setPickerSlot] = useState(null) // { matchNum, side: 'A'|'B', idx, team: 'ca'|'pdx' }
+  const [pickerSlot, setPickerSlot] = useState(null)
 
   const roundInfo = getRoundInfo(activeRound)
   const roundMatches = matchesByRound(activeRound)
@@ -24,8 +30,8 @@ export default function PairingsManager({ onClose }) {
   // Players already assigned in this round (to prevent duplicates)
   const assignedInRound = new Set()
   for (const m of roundMatches) {
-    for (const p of m.teamA || []) assignedInRound.add(p)
-    for (const p of m.teamB || []) assignedInRound.add(p)
+    for (const p of m.teamA || []) if (p) assignedInRound.add(p)
+    for (const p of m.teamB || []) if (p) assignedInRound.add(p)
   }
 
   async function handleAddMatch() {
@@ -50,25 +56,38 @@ export default function PairingsManager({ onClose }) {
     if (!pickerSlot) return
     const match = roundMatches.find((m) => m.matchNum === pickerSlot.matchNum)
     if (!match) return
-    const team = pickerSlot.side === 'A' ? [...(match.teamA || [])] : [...(match.teamB || [])]
-    // Ensure array is right size
-    while (team.length < roundInfo.teamSize) team.push(null)
+    const key = pickerSlot.side === 'A' ? 'teamA' : 'teamB'
+    const team = [...(match[key] || [])]
     team[pickerSlot.idx] = fullName
-    await saveMatch({
-      ...match,
-      [pickerSlot.side === 'A' ? 'teamA' : 'teamB']: team,
-    })
+    await saveMatch({ ...match, [key]: team })
     setPickerSlot(null)
   }
 
   async function handleClearSlot(matchNum, side, idx) {
     const match = roundMatches.find((m) => m.matchNum === matchNum)
     if (!match) return
-    const team = side === 'A' ? [...(match.teamA || [])] : [...(match.teamB || [])]
+    const key = side === 'A' ? 'teamA' : 'teamB'
+    const team = [...(match[key] || [])]
     team[idx] = null
+    await saveMatch({ ...match, [key]: team })
+  }
+
+  // Toggle a match between 2v2 and 1v1 (rounds 1-2 only)
+  async function handleToggleMatchType(matchNum) {
+    const match = roundMatches.find((m) => m.matchNum === matchNum)
+    if (!match) return
+    const currentSize = getMatchTeamSize(match)
+    const newSize = currentSize === 2 ? 1 : 2
+    const resize = (arr) => {
+      const next = [...(arr || [])]
+      if (newSize < next.length) return next.slice(0, newSize)
+      while (next.length < newSize) next.push(null)
+      return next
+    }
     await saveMatch({
       ...match,
-      [side === 'A' ? 'teamA' : 'teamB']: team,
+      teamA: resize(match.teamA),
+      teamB: resize(match.teamB),
     })
   }
 
@@ -80,14 +99,17 @@ export default function PairingsManager({ onClose }) {
     await setRoundPublished(activeRound, false)
   }
 
-  // Validate: every match has all slots filled
+  // Validate: every match has its teamA and teamB fully filled (size matches)
   const canPublish =
     roundMatches.length > 0 &&
-    roundMatches.every(
-      (m) =>
-        (m.teamA || []).filter(Boolean).length === roundInfo.teamSize &&
-        (m.teamB || []).filter(Boolean).length === roundInfo.teamSize,
-    )
+    roundMatches.every((m) => {
+      const sizeA = (m.teamA || []).length
+      const sizeB = (m.teamB || []).length
+      if (sizeA !== sizeB || sizeA === 0) return false
+      const filledA = (m.teamA || []).filter(Boolean).length
+      const filledB = (m.teamB || []).filter(Boolean).length
+      return filledA === sizeA && filledB === sizeB
+    })
 
   return (
     <div
@@ -152,6 +174,7 @@ export default function PairingsManager({ onClose }) {
               }
               onSlotClear={(side, idx) => handleClearSlot(m.matchNum, side, idx)}
               onDelete={() => handleDeleteMatch(m.matchNum)}
+              onToggleType={() => handleToggleMatchType(m.matchNum)}
             />
           ))
         )}
@@ -208,7 +231,12 @@ export default function PairingsManager({ onClose }) {
   )
 }
 
-function MatchBuilder({ match, roundInfo, disabled, onSlotClick, onSlotClear, onDelete }) {
+function MatchBuilder({ match, roundInfo, disabled, onSlotClick, onSlotClear, onDelete, onToggleType }) {
+  const matchSize = getMatchTeamSize(match) || roundInfo.teamSize
+  // Only rounds 1-2 support toggling between 2v2 and 1v1
+  const canToggle = roundInfo.id !== 3 && !disabled
+  const matchTypeLabel = matchSize === 2 ? '2v2 Match' : '1v1 Match'
+
   return (
     <div
       className="rounded-xl mb-3 overflow-hidden"
@@ -218,21 +246,40 @@ function MatchBuilder({ match, roundInfo, disabled, onSlotClick, onSlotClear, on
       }}
     >
       <div className="flex items-center justify-between px-3 py-2 border-b border-surface-border">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
-          Match {match.matchNum}
-        </span>
-        {!disabled && (
-          <button onClick={onDelete} className="p-1 text-text-muted hover:text-team-red">
-            <Trash2 size={14} />
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
+            Match {match.matchNum}
+          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style={{
+            background: matchSize === 2 ? 'rgba(200,16,46,0.12)' : 'rgba(194,184,163,0.12)',
+            color: matchSize === 2 ? '#C8102E' : '#C2B8A3',
+          }}>
+            {matchTypeLabel}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          {canToggle && (
+            <button
+              onClick={onToggleType}
+              className="p-1.5 text-text-muted hover:text-accent-warm transition-colors"
+              title={matchSize === 2 ? 'Switch to 1v1' : 'Switch to 2v2'}
+            >
+              {matchSize === 2 ? <User size={14} /> : <Users size={14} />}
+            </button>
+          )}
+          {!disabled && (
+            <button onClick={onDelete} className="p-1.5 text-text-muted hover:text-team-red">
+              <Trash2 size={14} />
+            </button>
+          )}
+        </div>
       </div>
       <div className="p-3 space-y-2">
         {/* CA side */}
         <div>
           <p className="text-[10px] font-bold uppercase tracking-wider text-team-red mb-1.5">CA</p>
           <div className="space-y-1.5">
-            {Array.from({ length: roundInfo.teamSize }).map((_, i) => (
+            {Array.from({ length: matchSize }).map((_, i) => (
               <PlayerSlot
                 key={`a-${i}`}
                 name={(match.teamA || [])[i]}
@@ -251,7 +298,7 @@ function MatchBuilder({ match, roundInfo, disabled, onSlotClick, onSlotClear, on
         <div>
           <p className="text-[10px] font-bold uppercase tracking-wider text-team-blue mb-1.5">PDX</p>
           <div className="space-y-1.5">
-            {Array.from({ length: roundInfo.teamSize }).map((_, i) => (
+            {Array.from({ length: matchSize }).map((_, i) => (
               <PlayerSlot
                 key={`b-${i}`}
                 name={(match.teamB || [])[i]}

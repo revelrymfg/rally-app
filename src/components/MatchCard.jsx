@@ -15,7 +15,8 @@ export default function MatchCard({ match }) {
         ? 'text-team-blue'
         : 'text-text-muted'
 
-  const isComplete = match.thru === 'F'
+  const isComplete = match.thru === 'F' || match.thru === 'FINAL'
+  const is1v1 = (match.teamA || []).length === 1 && (match.teamB || []).length === 1
 
   return (
     <div
@@ -30,12 +31,22 @@ export default function MatchCard({ match }) {
       <div className="flex-1 flex items-center justify-between px-4 py-3.5">
         {/* Player names */}
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-medium text-text-primary truncate">
-            {match.teamA.join(' / ')}
-          </p>
-          <p className="text-[13px] text-text-secondary truncate mt-0.5">
-            {match.teamB.join(' / ')}
-          </p>
+          {is1v1 ? (
+            <p className="text-[14px] font-medium text-text-primary truncate">
+              <span className="text-team-red">{match.teamA[0]}</span>
+              <span className="text-text-muted mx-1.5 text-[12px] tracking-wider">vs</span>
+              <span className="text-team-blue">{match.teamB[0]}</span>
+            </p>
+          ) : (
+            <>
+              <p className="text-[14px] font-medium text-text-primary truncate">
+                {(match.teamA || []).join(' / ')}
+              </p>
+              <p className="text-[13px] text-text-secondary truncate mt-0.5">
+                {(match.teamB || []).join(' / ')}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Status */}
