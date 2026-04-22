@@ -6,6 +6,8 @@ import HomeView from './components/views/HomeView'
 import MatchesView from './components/views/MatchesView'
 import PlayersView from './components/views/PlayersView'
 import FeedView from './components/views/FeedView'
+import { ToastProvider } from './contexts/ToastContext'
+import { useNotifications } from './hooks/useNotifications'
 
 function loadUser() {
   try {
@@ -16,17 +18,30 @@ function loadUser() {
   }
 }
 
-export default function App() {
+function AuthenticatedApp({ currentUser, onReset }) {
   const [activeTab, setActiveTab] = useState('home')
-  const [currentUser, setCurrentUser] = useState(loadUser)
-  const [skippedCountdown, setSkippedCountdown] = useState(
-    () => sessionStorage.getItem('countdownSkipped') === 'true'
-  )
+  useNotifications(currentUser)
 
   function handleTabChange(tab) {
     setActiveTab(tab)
     window.scrollTo(0, 0)
   }
+
+  return (
+    <AppShell activeTab={activeTab} onTabChange={handleTabChange} currentUser={currentUser} onReset={onReset}>
+      {activeTab === 'home' && <HomeView currentUser={currentUser} />}
+      {activeTab === 'matches' && <MatchesView currentUser={currentUser} />}
+      {activeTab === 'players' && <PlayersView />}
+      {activeTab === 'feed' && <FeedView currentUser={currentUser} />}
+    </AppShell>
+  )
+}
+
+export default function App() {
+  const [currentUser, setCurrentUser] = useState(loadUser)
+  const [skippedCountdown, setSkippedCountdown] = useState(
+    () => sessionStorage.getItem('countdownSkipped') === 'true'
+  )
 
   function handleReset() {
     localStorage.removeItem('rallyUser')
@@ -48,11 +63,8 @@ export default function App() {
   }
 
   return (
-    <AppShell activeTab={activeTab} onTabChange={handleTabChange} currentUser={currentUser} onReset={handleReset}>
-      {activeTab === 'home' && <HomeView currentUser={currentUser} />}
-      {activeTab === 'matches' && <MatchesView currentUser={currentUser} />}
-      {activeTab === 'players' && <PlayersView />}
-      {activeTab === 'feed' && <FeedView currentUser={currentUser} />}
-    </AppShell>
+    <ToastProvider>
+      <AuthenticatedApp currentUser={currentUser} onReset={handleReset} />
+    </ToastProvider>
   )
 }
