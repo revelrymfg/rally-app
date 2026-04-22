@@ -1,15 +1,20 @@
-import { rounds } from '../data/mockData'
+import { useMatches } from '../hooks/useMatches'
 
 export default function MomentumBar() {
-  // Find the live round
-  const liveRound = rounds.find(r => r.status === 'live')
-  if (!liveRound) return null
+  const { matches } = useMatches()
+
+  // Consider all published, non-final matches as "live"
+  const liveMatches = matches.filter(
+    (m) => m.published && m.thru !== 'F' && m.thru !== 'FINAL',
+  )
+
+  if (liveMatches.length === 0) return null
 
   let caWins = 0
   let pdxWins = 0
   let ties = 0
 
-  for (const m of liveRound.matches) {
+  for (const m of liveMatches) {
     if (m.leadingTeam === 'ca') caWins++
     else if (m.leadingTeam === 'pdx') pdxWins++
     else ties++
@@ -20,6 +25,7 @@ export default function MomentumBar() {
 
   const caPercent = (caWins / total) * 100
   const pdxPercent = (pdxWins / total) * 100
+  const tiePercent = (ties / total) * 100
 
   return (
     <div className="mx-5 mb-5">
@@ -50,7 +56,7 @@ export default function MomentumBar() {
           <div
             className="h-full"
             style={{
-              width: `${((ties / total) * 100)}%`,
+              width: `${tiePercent}%`,
               background: '#555',
             }}
           />
