@@ -95,7 +95,8 @@ export default function ResetTournament() {
                     onChange={(e) => { setPassword(e.target.value); setPwError(false) }}
                     placeholder="Password"
                     autoFocus
-                    className={`w-full bg-bg-tertiary border rounded-xl px-4 py-2.5 text-[14px] text-text-primary placeholder:text-text-muted outline-none mb-3 ${
+                    style={{ fontSize: 16 }}
+                    className={`w-full bg-bg-tertiary border rounded-xl px-4 py-2.5 text-text-primary placeholder:text-text-muted outline-none mb-3 ${
                       pwError ? 'border-team-red' : 'border-surface-border'
                     }`}
                   />
@@ -126,7 +127,8 @@ export default function ResetTournament() {
                   onChange={(e) => setConfirmText(e.target.value.toUpperCase())}
                   placeholder="Type RESET"
                   autoFocus
-                  className="w-full bg-bg-tertiary border border-surface-border rounded-xl px-4 py-2.5 text-[14px] text-text-primary placeholder:text-text-muted outline-none mb-4 text-center tracking-widest font-bold"
+                  style={{ fontSize: 16 }}
+                  className="w-full bg-bg-tertiary border border-surface-border rounded-xl px-4 py-2.5 text-text-primary placeholder:text-text-muted outline-none mb-4 text-center tracking-widest font-bold"
                 />
                 <div className="flex gap-3">
                   <button onClick={handleClose} className="flex-1 rounded-xl py-2.5 text-[13px] font-semibold text-text-muted border border-surface-border">Cancel</button>

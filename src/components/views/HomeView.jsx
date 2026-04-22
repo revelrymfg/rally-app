@@ -11,6 +11,7 @@ import DraftButton from '../DraftButton'
 import ResetTournament from '../ResetTournament'
 import { useFeed } from '../../hooks/useFirestore'
 import { useMatches, getRoundInfo } from '../../hooks/useMatches'
+import { useUserTeam } from '../../hooks/useUserTeam'
 import { eventData, scores, leaderboard, playerShortNames } from '../../data/mockData'
 
 function toShort(fullName) {
@@ -28,10 +29,11 @@ function toMatchCard(m) {
 export default function HomeView({ currentUser }) {
   const { posts: feedPosts } = useFeed()
   const hasAwards = useHasAwardVotes()
-  const { matches: allMatches, findUserMatch } = useMatches()
+  const { matches: allMatches } = useMatches()
+  const userTeam = useUserTeam(currentUser)
   const shortName = currentUser ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0] : null
-  const teamLabel = currentUser?.team === 'ca' ? 'CA' : currentUser?.team === 'pdx' ? 'PDX' : 'Team TBD'
-  const teamColor = currentUser?.team === 'ca' ? '#C8102E' : currentUser?.team === 'pdx' ? '#003DA5' : '#6B7280'
+  const teamLabel = userTeam === 'ca' ? 'CA' : userTeam === 'pdx' ? 'PDX' : 'Team TBD'
+  const teamColor = userTeam === 'ca' ? '#C8102E' : userTeam === 'pdx' ? '#003DA5' : '#6B7280'
 
   // Find the user's current match — prefer live, fall back to most recent round that has their match
   let userMatch = null

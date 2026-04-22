@@ -94,7 +94,8 @@ export default function DraftButton() {
                 onChange={(e) => { setPassword(e.target.value); setError(false) }}
                 placeholder="Enter password"
                 autoFocus
-                className={`w-full bg-bg-tertiary border rounded-xl px-4 py-2.5 text-[14px] text-text-primary placeholder:text-text-muted outline-none mb-3 ${
+                style={{ fontSize: 16 }}
+                className={`w-full bg-bg-tertiary border rounded-xl px-4 py-2.5 text-text-primary placeholder:text-text-muted outline-none mb-3 ${
                   error ? 'border-team-red' : 'border-surface-border focus:border-accent-warm/50'
                 }`}
               />

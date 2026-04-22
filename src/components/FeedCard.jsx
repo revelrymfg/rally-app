@@ -1,6 +1,12 @@
 export default function FeedCard({ post }) {
   const isSystem = post.team === 'system'
-  const ringColor = isSystem ? '#C2B8A3' : post.team === 'ca' ? '#C8102E' : '#003DA5'
+  const ringColor = isSystem
+    ? '#C2B8A3'
+    : post.team === 'ca'
+      ? '#C8102E'
+      : post.team === 'pdx'
+        ? '#003DA5'
+        : '#6B7280'
   const initial = isSystem ? '!' : post.author[0]
 
   return (
