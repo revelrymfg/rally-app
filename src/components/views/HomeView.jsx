@@ -35,31 +35,34 @@ export default function HomeView({ currentUser }) {
   const userTeam = useUserTeam(currentUser)
   const [scoringMatch, setScoringMatch] = useState(null)
   const isAdmin = typeof window !== 'undefined' && localStorage.getItem('draftAdmin') === 'true'
-  const shortName = currentUser ? playerShortNames[currentUser.name] || currentUser.name.split(' ')[0] : null
   const teamLabel = userTeam === 'ca' ? 'Drifters' : userTeam === 'pdx' ? 'Grifters' : 'Team TBD'
   const teamColor = userTeam === 'ca' ? '#C8102E' : userTeam === 'pdx' ? '#003DA5' : '#6B7280'
 
-  // Find the user's current match — prefer live, fall back to most recent round that has their match
+  // Find the user's current match using their FULL name (Firestore stores full names)
+  const fullName = currentUser?.name
   let userMatch = null
   let userMatchRound = null
-  if (shortName) {
+  let userPartners = []
+  let userOpponents = []
+
+  if (fullName) {
     const published = allMatches.filter((m) => m.published)
-    // Find any non-final match they're in
+    const userInMatch = (m) =>
+      (m.teamA || []).includes(fullName) || (m.teamB || []).includes(fullName)
+
+    // Prefer a live (non-final) match; fall back to any published match they're in
     const live = published.find(
-      (m) =>
-        (m.thru !== 'F' && m.thru !== 'FINAL') &&
-        ((m.teamA || []).includes(shortName) || (m.teamB || []).includes(shortName)),
+      (m) => (m.thru !== 'F' && m.thru !== 'FINAL') && userInMatch(m),
     )
-    if (live) {
-      userMatch = live
-    } else {
-      // Fall back to earliest round where user has a match
-      userMatch = published.find(
-        (m) => (m.teamA || []).includes(shortName) || (m.teamB || []).includes(shortName),
-      )
-    }
+    userMatch = live || published.find(userInMatch) || null
+
     if (userMatch) {
       userMatchRound = getRoundInfo(userMatch.roundId)
+      const teamA = (userMatch.teamA || []).filter(Boolean)
+      const teamB = (userMatch.teamB || []).filter(Boolean)
+      const onA = teamA.includes(fullName)
+      userPartners = (onA ? teamA : teamB).filter((n) => n !== fullName)
+      userOpponents = onA ? teamB : teamA
     }
   }
 
@@ -93,17 +96,35 @@ export default function HomeView({ currentUser }) {
             </span>
           </p>
           {userMatch ? (
-            <p className="text-[14px] text-text-primary font-medium">
-              {userMatchRound ? `Round ${userMatchRound.id}: ` : ''}
-              {(userMatch.teamA || []).filter(Boolean).map(toShort).join(' & ')}
-              {' vs '}
-              {(userMatch.teamB || []).filter(Boolean).map(toShort).join(' & ')}
-              {(userMatch.thru === 'F' || userMatch.thru === 'FINAL') && (
-                <span className="text-text-muted text-[12px] ml-2">
-                  ({userMatch.status})
-                </span>
+            <>
+              {userMatchRound && (
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-text-muted mb-1 mt-1">
+                  Round {userMatchRound.id}
+                </p>
               )}
-            </p>
+              <p className="text-[14px] text-text-primary font-medium leading-snug">
+                {userPartners.length > 0 ? (
+                  <>
+                    You're paired with{' '}
+                    <span className="font-bold">
+                      {userPartners.map(toShort).join(' & ')}
+                    </span>
+                  </>
+                ) : (
+                  <>Your match</>
+                )}
+                {' '}
+                <span className="text-text-muted">vs</span>{' '}
+                <span className="font-bold">
+                  {userOpponents.map(toShort).join(' & ')}
+                </span>
+                {(userMatch.thru === 'F' || userMatch.thru === 'FINAL') && (
+                  <span className="text-text-muted text-[12px] ml-1.5">
+                    ({userMatch.status})
+                  </span>
+                )}
+              </p>
+            </>
           ) : (
             <p className="text-[13px] text-text-muted">Pairings not yet posted</p>
           )}
