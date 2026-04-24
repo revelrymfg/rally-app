@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { X, Check, Flag } from 'lucide-react'
 import { useMatches } from '../hooks/useMatches'
 import { playerShortNames } from '../data/mockData'
@@ -53,6 +53,23 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
   const { saveMatch } = useMatches()
   const [holes, setHoles] = useState(match.holes || {})
   const [saving, setSaving] = useState(false)
+
+  // Lock background scroll while modal is open
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow
+    const prevPosition = document.body.style.position
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prevOverflow
+      document.body.style.position = prevPosition
+    }
+  }, [])
+
+  // Keep local state in sync if the Firestore match doc updates externally
+  // (e.g. another admin enters a score on their device)
+  useEffect(() => {
+    if (match.holes) setHoles(match.holes)
+  }, [match.holes])
 
   const computed = useMemo(() => computeMatchStatus(holes), [holes])
 
