@@ -14,7 +14,8 @@ import ScoreEntry from '../ScoreEntry'
 import { useFeed } from '../../hooks/useFirestore'
 import { useMatches, getRoundInfo } from '../../hooks/useMatches'
 import { useUserTeam } from '../../hooks/useUserTeam'
-import { eventData, scores, leaderboard, playerShortNames } from '../../data/mockData'
+import { useTournamentState } from '../../hooks/useTournamentState'
+import { leaderboard, playerShortNames } from '../../data/mockData'
 
 function toShort(fullName) {
   return fullName == null ? '?' : (playerShortNames[fullName] || fullName.split(' ')[0])
@@ -33,6 +34,7 @@ export default function HomeView({ currentUser }) {
   const hasAwards = useHasAwardVotes()
   const { matches: allMatches } = useMatches()
   const userTeam = useUserTeam(currentUser)
+  const { scores: liveScores, day: liveDay, session: liveSession } = useTournamentState()
   const [scoringMatch, setScoringMatch] = useState(null)
   const teamLabel = userTeam === 'ca' ? 'Drifters' : userTeam === 'pdx' ? 'Grifters' : 'Team TBD'
   const teamColor = userTeam === 'ca' ? '#C8102E' : userTeam === 'pdx' ? '#003DA5' : '#6B7280'
@@ -73,7 +75,7 @@ export default function HomeView({ currentUser }) {
   return (
     <>
       <EventHeader />
-      <ScoreHero scores={scores} day={eventData.day} session={eventData.session} />
+      <ScoreHero scores={liveScores} day={liveDay} session={liveSession} />
 
       {/* Personal card */}
       {currentUser && (
