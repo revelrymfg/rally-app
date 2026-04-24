@@ -58,8 +58,6 @@ export default function MatchesView({ currentUser }) {
   const [scoringMatch, setScoringMatch] = useState(null)
   const { publishedMatchesByRound } = useMatches()
 
-  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('draftAdmin') === 'true'
-
   return (
     <div className="pt-6">
       <h2 className="text-[18px] font-bold tracking-[0.15em] uppercase text-accent-warm text-center mb-4">
@@ -69,11 +67,9 @@ export default function MatchesView({ currentUser }) {
       {/* Admin pairings manager entry */}
       <PairingsButton />
 
-      {isAdmin && (
-        <p className="text-[11px] text-text-muted text-center mb-3 tracking-wider">
-          Tap a match to enter scores
-        </p>
-      )}
+      <p className="text-[11px] text-text-muted text-center mb-3 tracking-wider">
+        Tap a match to enter scores
+      </p>
 
       {ROUND_INFO.map((info) => {
         const matches = publishedMatchesByRound(info.id)
@@ -141,7 +137,6 @@ export default function MatchesView({ currentUser }) {
       {scoringMatch && (
         <ScoreEntry
           match={scoringMatch}
-          readOnly={!isAdmin}
           onClose={() => setScoringMatch(null)}
         />
       )}

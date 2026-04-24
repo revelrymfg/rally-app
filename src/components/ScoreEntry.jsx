@@ -49,7 +49,7 @@ export function computeMatchStatus(holes = {}) {
   return { status, thru, leadingTeam, caWins, pdxWins, holesPlayed, isFinal }
 }
 
-export default function ScoreEntry({ match, onClose, readOnly = false }) {
+export default function ScoreEntry({ match, onClose }) {
   const { saveMatch } = useMatches()
   const [holes, setHoles] = useState(match.holes || {})
   const [saving, setSaving] = useState(false)
@@ -79,7 +79,6 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
   const teamBLabel = teamB.map(toShort).join(' / ')
 
   const handleSelect = useCallback(async (hole, winner) => {
-    if (readOnly) return
     const next = { ...holes }
     if (next[hole] === winner) {
       delete next[hole] // tapping same choice clears
@@ -101,7 +100,7 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
     } finally {
       setSaving(false)
     }
-  }, [holes, match, readOnly, saveMatch])
+  }, [holes, match, saveMatch])
 
   // leading color for header
   const leadColor =
@@ -167,18 +166,15 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
 
       {/* Hole-by-hole grid */}
       <div className="flex-1 overflow-y-auto w-full max-w-[430px] mx-auto px-5 pb-24">
-        {!readOnly && (
-          <p className="text-[11px] text-text-muted mb-2 text-center">
-            Tap to set hole winner · tap again to clear
-          </p>
-        )}
+        <p className="text-[11px] text-text-muted mb-2 text-center">
+          Tap to set hole winner · tap again to clear
+        </p>
         <div className="space-y-1.5">
           {Array.from({ length: TOTAL_HOLES }, (_, i) => i + 1).map((hole) => (
             <HoleRow
               key={hole}
               hole={hole}
               winner={holes[hole]}
-              readOnly={readOnly}
               onSelect={(w) => handleSelect(hole, w)}
             />
           ))}
@@ -204,7 +200,7 @@ export default function ScoreEntry({ match, onClose, readOnly = false }) {
   )
 }
 
-function HoleRow({ hole, winner, readOnly, onSelect }) {
+function HoleRow({ hole, winner, onSelect }) {
   const options = [
     { key: 'ca', label: 'DRIFT', color: '#C8102E' },
     { key: 'halved', label: '½', color: '#6B7280' },
@@ -229,8 +225,7 @@ function HoleRow({ hole, winner, readOnly, onSelect }) {
             <button
               key={opt.key}
               onClick={() => onSelect(opt.key)}
-              disabled={readOnly}
-              className="rounded-lg py-2 text-[12px] font-bold uppercase tracking-wider transition-all active:scale-[0.96] disabled:opacity-70"
+              className="rounded-lg py-2 text-[12px] font-bold uppercase tracking-wider transition-all active:scale-[0.96]"
               style={{
                 background: selected ? opt.color : 'transparent',
                 color: selected ? '#fff' : opt.color,

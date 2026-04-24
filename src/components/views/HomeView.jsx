@@ -34,7 +34,6 @@ export default function HomeView({ currentUser }) {
   const { matches: allMatches } = useMatches()
   const userTeam = useUserTeam(currentUser)
   const [scoringMatch, setScoringMatch] = useState(null)
-  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('draftAdmin') === 'true'
   const teamLabel = userTeam === 'ca' ? 'Drifters' : userTeam === 'pdx' ? 'Grifters' : 'Team TBD'
   const teamColor = userTeam === 'ca' ? '#C8102E' : userTeam === 'pdx' ? '#003DA5' : '#6B7280'
 
@@ -181,7 +180,6 @@ export default function HomeView({ currentUser }) {
       {scoringMatch && (
         <ScoreEntry
           match={scoringMatch}
-          readOnly={!isAdmin}
           onClose={() => setScoringMatch(null)}
         />
       )}
