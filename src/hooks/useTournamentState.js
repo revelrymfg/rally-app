@@ -1,4 +1,4 @@
-import { useMatches, ROUND_INFO } from './useMatches'
+import { useMatches } from './useMatches'
 
 // Tournament starts April 23, 2026 at 12:00pm Pacific
 const TOURNAMENT_START = new Date('2026-04-23T12:00:00-07:00').getTime()
