@@ -1,22 +1,31 @@
 import { useState } from 'react'
 import { players } from '../../data/mockData'
 import { useDraft } from '../../hooks/useDraft'
+import { useTournamentStats } from '../../hooks/useTournamentStats'
 import PowerRankings from '../PowerRankings'
 
-// Look up full player object by name (so we have handicap, ghin, etc.)
-function lookupPlayer(name) {
-  return players.find((p) => p.name === name) || { name, handicap: null, wins: 0, losses: 0, draws: 0 }
+// Merge a roster name with mockData (handicap/GHIN) and live stats (W/L/D).
+function buildRow(name, byPlayer) {
+  const base = players.find((p) => p.name === name) || { name, handicap: null }
+  const stats = byPlayer[name] || { wins: 0, losses: 0, draws: 0 }
+  return {
+    ...base,
+    wins: stats.wins,
+    losses: stats.losses,
+    draws: stats.draws,
+  }
 }
 
 export default function PlayersView() {
   const [tab, setTab] = useState('rankings')
   const { draft, ready } = useDraft()
+  const { byPlayer } = useTournamentStats()
 
-  // Resolve rosters from live Firestore draft state
+  // Resolve rosters from live Firestore draft state, merge with live stats
   const caRosterNames = draft?.caRoster || []
   const pdxRosterNames = draft?.pdxRoster || []
-  const caPlayers = caRosterNames.map(lookupPlayer)
-  const pdxPlayers = pdxRosterNames.map(lookupPlayer)
+  const caPlayers = caRosterNames.map((n) => buildRow(n, byPlayer))
+  const pdxPlayers = pdxRosterNames.map((n) => buildRow(n, byPlayer))
 
   // Draft pool: players not yet drafted, only show while draft is active/waiting
   const draftedSet = new Set([...caRosterNames, ...pdxRosterNames])
