@@ -48,6 +48,10 @@ export function useMatches() {
       thru: match.thru ?? '-',
       leadingTeam: match.leadingTeam ?? null,
       published: match.published ?? false,
+      // Persist hole-by-hole results. ScoreEntry sends the full updated map
+      // on every save, so a whole-object overwrite is correct. Without this
+      // field the holes map was silently dropped on every save.
+      holes: match.holes || {},
       updatedAt: serverTimestamp(),
     })
   }, [])
