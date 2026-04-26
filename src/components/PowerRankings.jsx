@@ -1,152 +1,125 @@
+import { useMemo } from 'react'
 import { Trophy, TrendingUp, Star, Users } from 'lucide-react'
-import { players, rounds } from '../data/mockData'
+import { players } from '../data/mockData'
+import { useTournamentStats } from '../hooks/useTournamentStats'
+import { useDraft } from '../hooks/useDraft'
 
-// Compute W/L/D dynamically from rounds match data
-function computePlayerStats() {
-  const stats = {}
-  for (const p of players) {
-    stats[p.name] = { name: p.name, team: p.team, handicap: p.handicap, wins: 0, losses: 0, draws: 0 }
-  }
+// Quick handicap lookup by full name
+const HANDICAP_BY_NAME = Object.fromEntries(
+  players.map((p) => [p.name, p.handicap]),
+)
 
-  // Map short names back to full names
-  const shortToFull = {}
-  for (const p of players) {
-    const firstName = p.name.split(' ')[0]
-    // Handle disambiguated names like "Micah P.", "Brandon B.", etc.
-    shortToFull[firstName] = p.name
-  }
-  // More specific short names take precedence
-  const shortNames = {
-    'Micah P.': 'Micah Pueschel', 'Micah B.': 'Micah Brown',
-    'Brandon B.': 'Brandon Ball', 'Brandon L.': 'Brandon Lehmann',
-    'Nick D.': 'Nick DeRosa', 'Rob D.': 'Rob Donegan',
-    'Aaron K.': 'Aaron Kramer',
-  }
-
-  function resolvePlayer(shortName) {
-    if (shortNames[shortName]) return shortNames[shortName]
-    if (stats[shortName]) return shortName // exact match
-    const firstName = shortName.replace('.', '')
-    for (const p of players) {
-      if (p.name.split(' ')[0] === firstName) return p.name
-    }
-    return null
-  }
-
-  for (const round of rounds) {
-    for (const m of round.matches) {
-      if (m.status === 'AS' || m.status === '-') {
-        // Draw — credit all players
-        for (const name of [...m.teamA, ...m.teamB]) {
-          const full = resolvePlayer(name)
-          if (full && stats[full]) stats[full].draws++
-        }
-      } else if (m.leadingTeam) {
-        const winners = m.leadingTeam === 'ca' ? m.teamA : m.teamB
-        const losers = m.leadingTeam === 'ca' ? m.teamB : m.teamA
-        for (const name of winners) {
-          const full = resolvePlayer(name)
-          if (full && stats[full]) stats[full].wins++
-        }
-        for (const name of losers) {
-          const full = resolvePlayer(name)
-          if (full && stats[full]) stats[full].losses++
-        }
-      }
-    }
-  }
-
-  return stats
+// Resolve a player's team from the live draft rosters. mockData has team=null
+// for everyone except the two captains, so the hook's byPlayer[name].team is
+// stale — draft state is authoritative.
+function buildTeamLookup(draft) {
+  const map = {}
+  for (const n of draft?.caRoster || []) map[n] = 'ca'
+  for (const n of draft?.pdxRoster || []) map[n] = 'pdx'
+  return map
 }
 
-function computeRankings() {
-  const playerStats = computePlayerStats()
-  const allStats = Object.values(playerStats)
+// Derive ranking categories from the aggregated stats.
+function computeRankings(byPlayer, byMatch, teamByName) {
+  const teamOf = (name) => teamByName[name] || byPlayer[name]?.team || null
+  // ── MVP: 3*W + 1*D, ties broken by wins desc, then matchesPlayed asc ──
+  const mvpScores = Object.values(byPlayer)
+    .map((p) => ({
+      ...p,
+      team: teamOf(p.name),
+      mvpScore: p.wins * 3 + p.draws * 1,
+    }))
+    .filter((p) => p.mvpScore > 0)
+    .sort((a, b) => (
+      (b.mvpScore - a.mvpScore) ||
+      (b.wins - a.wins) ||
+      (a.matchesPlayed - b.matchesPlayed)
+    ))
 
-  // MVP Score: 3*W + 1*D
-  const mvpScores = allStats
-    .map(p => ({ ...p, mvpScore: p.wins * 3 + p.draws * 1 }))
-    .filter(p => p.mvpScore > 0)
-    .sort((a, b) => b.mvpScore - a.mvpScore)
-
-  // Clutch Rating: singles wins (Round 3)
-  const singlesRound = rounds.find(r => r.name.includes('Singles'))
+  // ── Clutch: 1UP and 2UP wins across all rounds ──
+  // Both players on 2-man winning sides get credited.
   const clutchPlayers = []
-  if (singlesRound) {
-    for (const m of singlesRound.matches) {
-      if (m.leadingTeam && m.status !== 'AS' && m.status !== '-') {
-        const winnerNames = m.leadingTeam === 'ca' ? m.teamA : m.teamB
-        for (const name of winnerNames) {
-          for (const [short, full] of Object.entries({
-            'Micah P.': 'Micah Pueschel', 'Micah B.': 'Micah Brown',
-            'Brandon B.': 'Brandon Ball', 'Brandon L.': 'Brandon Lehmann',
-            'Nick D.': 'Nick DeRosa', 'Rob D.': 'Rob Donegan',
-            'Aaron K.': 'Aaron Kramer',
-          })) {
-            if (name === short) {
-              const p = playerStats[full]
-              if (p) clutchPlayers.push({ name: p.name, team: p.team, status: m.status })
-              break
-            }
-          }
-          // Try first name match
-          if (!clutchPlayers.find(c => c.status === m.status && c.name?.startsWith(name.replace('.', '')))) {
-            const match = players.find(p => p.name.split(' ')[0] === name.replace('.', ''))
-            if (match) clutchPlayers.push({ name: match.name, team: match.team, status: m.status })
-          }
-        }
-      }
+  const finalizedMatches = Object.values(byMatch)
+    .filter((m) => m.isFinal && !m.isHalved)
+    .filter((m) => m.decisiveMargin === 1 || m.decisiveMargin === 2)
+    .sort((a, b) => (
+      (a.decisiveMargin - b.decisiveMargin) || // 1UP first
+      (a.roundId - b.roundId) ||               // then earliest round
+      (a.matchNum - b.matchNum)
+    ))
+  for (const m of finalizedMatches) {
+    for (const winnerName of m.winners) {
+      clutchPlayers.push({
+        name: winnerName,
+        team: teamOf(winnerName) || m.winningTeam,
+        status: m.status,
+        margin: m.decisiveMargin,
+      })
     }
   }
 
-  // Biggest Upset: higher HCP player beating lower HCP player
+  // ── Biggest Upset: higher-handicap winner beating lower-handicap loser ──
+  // Plus-handicaps stored as negatives (e.g. Joseph Kim -2.0); the
+  // `winner.hcp > loser.hcp` comparison still works correctly.
   const upsets = []
-  for (const round of rounds) {
-    for (const m of round.matches) {
-      if (!m.leadingTeam || m.status === 'AS' || m.status === '-') continue
-      const winnerNames = m.leadingTeam === 'ca' ? m.teamA : m.teamB
-      const loserNames = m.leadingTeam === 'ca' ? m.teamB : m.teamA
-
-      for (const wName of winnerNames) {
-        const winner = players.find(p => p.name.split(' ')[0] === wName.replace('.', '') || p.name === wName)
-        if (!winner || winner.handicap == null) continue
-        for (const lName of loserNames) {
-          const loser = players.find(p => p.name.split(' ')[0] === lName.replace('.', '') || p.name === lName)
-          if (!loser || loser.handicap == null) continue
-          if (winner.handicap > loser.handicap) {
-            upsets.push({
-              winner: winner.name, winnerTeam: winner.team,
-              loser: loser.name, hcpDiff: Math.round((winner.handicap - loser.handicap) * 10) / 10,
-              round: round.id,
-            })
-          }
+  for (const m of Object.values(byMatch)) {
+    if (!m.isFinal || m.isHalved) continue
+    for (const wName of m.winners) {
+      const wHcp = HANDICAP_BY_NAME[wName]
+      if (wHcp == null) continue
+      for (const lName of m.losers) {
+        const lHcp = HANDICAP_BY_NAME[lName]
+        if (lHcp == null) continue
+        if (wHcp > lHcp) {
+          upsets.push({
+            winner: wName,
+            winnerTeam: teamOf(wName),
+            loser: lName,
+            hcpDiff: Math.round((wHcp - lHcp) * 10) / 10,
+            round: m.roundId,
+          })
         }
       }
     }
   }
   upsets.sort((a, b) => b.hcpDiff - a.hcpDiff)
 
-  // Best Duo: most team wins together across four-ball/foursomes
+  // ── Best Duo: most pairing wins together (2-man side experiences) ──
+  // pairings already excludes singles by construction in the hook.
   const duoWins = {}
-  for (const round of rounds) {
-    if (round.name.includes('Singles')) continue
-    for (const m of round.matches) {
-      if (!m.leadingTeam || m.status === 'AS') continue
-      const winners = m.leadingTeam === 'ca' ? m.teamA : m.teamB
-      if (winners.length === 2) {
-        const key = [...winners].sort().join(' & ')
-        if (!duoWins[key]) duoWins[key] = { names: key, team: m.leadingTeam, wins: 0 }
-        duoWins[key].wins++
+  for (const p of Object.values(byPlayer)) {
+    for (const pair of p.pairings) {
+      if (pair.result !== 'win') continue
+      // Stable key from sorted pair of names; counts each match once
+      // since both partners contribute the same key.
+      const key = [p.name, pair.partner].sort().join(' & ')
+      if (!duoWins[key]) {
+        duoWins[key] = {
+          names: key,
+          team: teamOf(p.name) || p.team,
+          wins: 0,
+        }
       }
+      duoWins[key].wins += 1
     }
   }
+  // Each pairing-win gets counted twice (once from each partner's perspective)
+  // — divide by 2 so wins reflects matches, not player-credits.
+  for (const d of Object.values(duoWins)) d.wins /= 2
   const bestDuos = Object.values(duoWins).sort((a, b) => b.wins - a.wins)
 
   return { mvpScores, clutchPlayers, upsets, bestDuos }
 }
 
 export default function PowerRankings() {
-  const { mvpScores, clutchPlayers, upsets, bestDuos } = computeRankings()
+  const { byPlayer, byMatch, byTeam } = useTournamentStats()
+  const { draft } = useDraft()
+  const totalMatchesPlayed = byTeam.ca.matchesPlayed + byTeam.pdx.matchesPlayed
+  const teamByName = useMemo(() => buildTeamLookup(draft), [draft])
+  const { mvpScores, clutchPlayers, upsets, bestDuos } = useMemo(
+    () => computeRankings(byPlayer, byMatch, teamByName),
+    [byPlayer, byMatch, teamByName],
+  )
 
   return (
     <div className="space-y-5">
@@ -161,7 +134,7 @@ export default function PowerRankings() {
 
       {/* Clutch Rating */}
       {clutchPlayers.length > 0 && (
-        <RankingSection icon={TrendingUp} title="Clutch Rating" subtitle="Singles match leaders">
+        <RankingSection icon={TrendingUp} title="Clutch Rating" subtitle="Won 1UP or 2UP — held nerve in tight finishes">
           {clutchPlayers.slice(0, 5).map((p, i) => (
             <RankRow key={`${p.name}-${i}`} rank={i + 1} name={p.name} team={p.team} stat={p.status} />
           ))}
@@ -213,7 +186,7 @@ export default function PowerRankings() {
         </RankingSection>
       )}
 
-      {mvpScores.length === 0 && clutchPlayers.length === 0 && (
+      {totalMatchesPlayed === 0 && (
         <p className="text-[13px] text-text-muted text-center py-6 mx-5">
           Rankings will appear once matches are played
         </p>
